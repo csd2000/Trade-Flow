@@ -1,0 +1,362 @@
+1) Role-based auth (NextAuth) with “admin” role
+.env
+Add the emails of allowed admins (or use a DB role check—both shown).
+
+ini
+Copy
+Edit
+ADMIN_EMAILS=you@example.com,cofounder@example.com
+NEXTAUTH_SECRET=your_session_secret
+NEXTAUTH_URL=http://localhost:3000
+/lib/auth.ts (NextAuth config + role mapping)
+ts
+Copy
+Edit
+// /lib/auth.ts
+import NextAuth, { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
+import TwitterProvider from "next-auth/providers/twitter";
+import FacebookProvider from "next-auth/providers/facebook";
+
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
+  .split(",")
+  .map(s => s.trim().toLowerCase())
+  .filter(Boolean);
+
+export const authOptions: NextAuthOptions = {
+  providers: [
+    GoogleProvider({ clientId: process.env.GOOGLE_CLIENT_ID!, clientSecret: process.env.GOOGLE_CLIENT_SECRET! }),
+    GitHubProvider({ clientId: process.env.GITHUB_CLIENT_ID!, clientSecret: process.env.GITHUB_CLIENT_SECRET! }),
+    TwitterProvider({ clientId: process.env.TWITTER_CONSUMER_KEY!, clientSecret: process.env.TWITTER_CONSUMER_SECRET! }),
+    FacebookProvider({ clientId: process.env.FACEBOOK_APP_ID!, clientSecret: process.env.FACEBOOK_APP_SECRET! }),
+  ],
+  session: { strategy: "jwt" },
+  callbacks: {
+    async jwt({ token, account, profile }) {
+      // Map admin based on email allowlist (quick start)
+      if (token?.email && ADMIN_EMAILS.includes(token.email.toLowerCase())) {
+        token.role = "admin";
+      } else {
+        // default to 'free' unless you already map from DB (see Supabase notes below)
+        token.role = token.role || "free";
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      (session as any).role = (token as any).role || "free";
+      return session;
+    },
+  },
+};
+
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
+If you’re on the pages router instead of app router, export default NextAuth(authOptions) from /pages/api/auth/[...nextauth].ts and remove the GET/POST lines.
+
+2) Guard admin routes
+/middleware.ts (protect /admin routes)
+ts
+Copy
+Edit
+// /middleware.ts
+import { withAuth } from "next-auth/middleware";
+
+export default withAuth({
+  callbacks: {
+    authorized: ({ token, req }) => {
+      const url = new URL(req.nextUrl);
+      if (url.pathname.startsWith("/admin")) {
+        return token?.role === "admin"; // only admins
+      }
+      return true;
+    },
+  },
+});
+
+export const config = {
+  matcher: ["/admin/:path*"],
+};
+3) Admin shell + settings page
+/components/AdminGuard.tsx
+tsx
+Copy
+Edit
+"use client";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
+export default function AdminGuard({ children }: { children: React.ReactNode }) {
+  const { data, status } = useSession();
+  const router = useRouter();
+  if (status === "loading") return null;
+  if (!data || (data as any).role !== "admin") {
+    router.push("/"); return null;
+  }
+  return <>{children}</>;
+}
+/app/admin/layout.tsx (App Router) or /pages/admin/_app.tsx (Pages)
+tsx
+Copy
+Edit
+import AdminGuard from "@/components/AdminGuard";
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AdminGuard>
+      <div className="min-h-screen flex">
+        {/* Collapsible sidebar */}
+        <aside className="w-16 hover:w-56 transition-all duration-300 bg-[#12171E] text-white p-3 border-r border-[#2C3744]">
+          <div className="text-xs opacity-70 mb-2">ADMIN</div>
+          <nav className="space-y-2">
+            <a href="/admin" className="block rounded px-2 py-2 hover:bg-[#1F2630]">Dashboard</a>
+            <a href="/admin/content" className="block rounded px-2 py-2 hover:bg-[#1F2630]">Content</a>
+            <a href="/admin/training" className="block rounded px-2 py-2 hover:bg-[#1F2630]">Training</a>
+            <a href="/admin/settings" className="block rounded px-2 py-2 hover:bg-[#1F2630]">Settings</a>
+          </nav>
+        </aside>
+        <main className="flex-1 bg-[#1A1F27] text-white p-6 overflow-y-auto">{children}</main>
+      </div>
+    </AdminGuard>
+  );
+}
+/app/admin/page.tsx (or /pages/admin/index.tsx)
+tsx
+Copy
+Edit
+export default function AdminHome() {
+  return (
+    <div>
+      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+      <p className="opacity-80 mt-2">Manage content, training modules, strategies, and global settings.</p>
+      <div className="grid md:grid-cols-2 gap-4 mt-6">
+        <a href="/admin/content" className="rounded-xl border border-[#2C3744] bg-[#232B36] p-4 hover:shadow-xl transition">Content Editor</a>
+        <a href="/admin/training" className="rounded-xl border border-[#2C3744] bg-[#232B36] p-4 hover:shadow-xl transition">Training Modules</a>
+        <a href="/admin/settings" className="rounded-xl border border-[#2C3744] bg-[#232B36] p-4 hover:shadow-xl transition">App Settings</a>
+      </div>
+    </div>
+  );
+}
+4) Content editing (all pages + modules)
+You’ve got two storage options. I’ll show Supabase (preferred) and a file-based starter for local development.
+
+Option A — Supabase CMS (recommended)
+Supabase table
+Create table cms_content:
+
+id uuid pk default uuid_generate_v4()
+
+path text (unique) — e.g. /academy/module/passive-income-training/passive-income-module-1
+
+data jsonb — page/module data blob
+
+updated_by text
+
+updated_at timestamp default now()
+
+Enable RLS, and add policy:
+
+Read: true
+
+Write: only if user email is in ADMIN_EMAILS or user role = admin (if you mirror roles in Supabase).
+
+/lib/supabase.ts
+ts
+Copy
+Edit
+import { createClient } from "@supabase/supabase-js";
+
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY! // for server API routes; for client use anon key
+);
+/pages/api/admin/content.ts (pages router; for app router use route handlers)
+ts
+Copy
+Edit
+import { supabase } from "@/lib/supabase";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
+export default async function handler(req, res) {
+  const session = await getServerSession(req, res, authOptions);
+  if (!session || (session as any).role !== "admin") {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+  if (req.method === "GET") {
+    const { path } = req.query;
+    const { data, error } = await supabase.from("cms_content").select("*").eq("path", path).single();
+    if (error) return res.status(404).json({ error: "Not found" });
+    return res.status(200).json(data);
+  }
+  if (req.method === "POST") {
+    const { path, data: blob } = req.body;
+    const { data, error } = await supabase.from("cms_content")
+      .upsert({ path, data: blob, updated_by: session.user?.email })
+      .select().single();
+    if (error) return res.status(400).json({ error: error.message });
+    return res.status(200).json(data);
+  }
+  return res.status(405).end();
+}
+/app/admin/content/page.tsx – CMS-like editor (JSON editor)
+tsx
+Copy
+Edit
+"use client";
+import { useState } from "react";
+
+export default function ContentEditor() {
+  const [path, setPath] = useState("/academy/module/passive-income-training/passive-income-module-1");
+  const [content, setContent] = useState("{}");
+  const [status, setStatus] = useState("");
+
+  const load = async () => {
+    setStatus("Loading...");
+    const r = await fetch(`/api/admin/content?path=${encodeURIComponent(path)}`);
+    if (!r.ok) { setStatus("Not found"); setContent("{}"); return; }
+    const json = await r.json();
+    setContent(JSON.stringify(json.data, null, 2));
+    setStatus("Loaded");
+  };
+  const save = async () => {
+    setStatus("Saving…");
+    const r = await fetch(`/api/admin/content`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path, data: JSON.parse(content) })
+    });
+    if (!r.ok) { setStatus("Save failed"); return; }
+    setStatus("Saved ✅");
+  };
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold">Content Editor</h1>
+      <div className="mt-4 grid md:grid-cols-[320px_1fr] gap-4">
+        <div className="bg-[#232B36] border border-[#2C3744] p-4 rounded-xl">
+          <label className="text-sm">Content Path</label>
+          <input value={path} onChange={e=>setPath(e.target.value)}
+            className="mt-1 w-full rounded bg-[#1A2431] border border-[#2C3744] p-2" />
+          <div className="mt-3 flex gap-2">
+            <button onClick={load} className="px-3 py-2 rounded bg-cyan-600 hover:bg-cyan-500">Load</button>
+            <button onClick={save} className="px-3 py-2 rounded bg-[#1F2630] border border-[#2C3744] hover:bg-[#263140]">Save</button>
+          </div>
+          <div className="text-sm opacity-70 mt-2">{status}</div>
+        </div>
+        <textarea
+          value={content}
+          onChange={e=>setContent(e.target.value)}
+          className="w-full min-h-[60vh] rounded-xl bg-[#1A2431] border border-[#2C3744] p-3 font-mono text-sm"
+        />
+      </div>
+    </div>
+  );
+}
+How it works: Your public pages (e.g., the training module page) first try to fetch a record from cms_content by path. If found, render that version; if not, fall back to the JSON in /data/trade_ninja_master_training.json.
+
+This gives you a CMS override layer without losing your default content.
+
+Option B — File-based starter (local/dev)
+If you’re not ready for Supabase writes yet, you can temporarily POST to an API that updates JSON files under /data in dev mode only. (⚠️ On Vercel, filesystem is read-only at runtime. Use Supabase in production.)
+
+5) Make every page editable
+For each page that has content (like the Academy module page we built), add a tiny helper that fetches CMS overrides by path:
+
+ts
+Copy
+Edit
+// /lib/cms.ts
+export async function getCMSContent(path: string) {
+  try {
+    const r = await fetch(`/api/admin/content?path=${encodeURIComponent(path)}`, { cache: "no-store" });
+    if (!r.ok) return null;
+    const json = await r.json();
+    return json.data; // your stored blob
+  } catch { return null; }
+}
+Then in your module page (or dashboard, builder, etc.), compute a stable path and check CMS first:
+
+tsx
+Copy
+Edit
+const cmsPath = `/academy/module/${track}/${slug}`;
+const override = await getCMSContent(cmsPath);
+const dataToUse = override ?? defaultFromMasterFile;
+Now an admin can log in, go to Admin → Content, load that path, edit JSON (steps, overview, resources, etc.), and Save. The live page picks it up immediately.
+
+6) Admin Settings
+Add a simple settings doc you can also store in cms_content with path="/admin/settings" (theme, feature flags, default roles, etc.). You can manage:
+
+Theme tokens (colors)
+
+Sidebar behavior (collapsed by default)
+
+Feature flags (orderbook, automation, alerts)
+
+Access tier gates (which routes require premium)
+
+Create an Admin UI like:
+
+tsx
+Copy
+Edit
+// /app/admin/settings/page.tsx
+export default function AdminSettings() {
+  // load / save via /api/admin/content path "/admin/settings"
+  // shape: { theme: {...}, features: {...}, gates: {...} }
+  return <div>/* similar editor UI as Content */</div>;
+}
+7) Audit log (recommended)
+Create table admin_audit_log:
+
+id uuid pk
+
+email text
+
+action text (e.g., update_content)
+
+path text
+
+diff jsonb (optional)
+
+created_at default now()
+
+Write a row after each save in /api/admin/content. This gives you traceability.
+
+8) Security hardening (quick hits)
+Only admins can access /admin/* and /api/admin/*.
+
+Add CSRF protection (NextAuth has a built-in CSRF token for forms; for JSON fetch, validate session server-side—as shown).
+
+Rate-limit POST /api/admin/content (e.g., upstash-ratelimit).
+
+Validate your JSON with a Zod schema before saving.
+
+You’re ready
+Admins can log in (Google/GitHub/Twitter/Facebook), see Admin Dashboard, and edit content for any page.
+
+Public pages check CMS overrides first, then fall back to bundled JSON—so nothing breaks if the DB is empty.
+
+The same pattern works for strategies, exit presets, dashboard copy, etc.
+
+If you want, I can bundle these files into a ZIP and include:
+
+/admin shell + pages,
+
+API routes,
+
+Supabase table SQL,
+
+a Zod schema for module validation.
+
+
+
+
+
+
+
+
+
+
+Ask ChatGPT

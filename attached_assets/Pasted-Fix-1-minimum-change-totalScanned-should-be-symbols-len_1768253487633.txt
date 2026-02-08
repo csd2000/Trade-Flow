@@ -1,0 +1,137 @@
+Fix 1 (minimum change): totalScanned should be symbols.length
+
+In your route:
+
+router.get('/scan', async (req: Request, res: Response) => {
+  const symbols = symbolsParam ? symbolsParam.split(',') : DEFAULT_SYMBOLS.slice(0, 10);
+  const results = await reversalDetectionService.scanMultipleStocks(symbols);
+
+  res.json({
+    summary: {
+      totalScanned: symbols.length,          // ✅ scanned attempts
+      reversalsDetected: results.length,     // ✅ signals found (unthrottled)
+    },
+    results
+  });
+});
+
+
+That alone will make “Stocks Scanned” reflect reality.
+
+Fix 2 (best practice): return both attempted + analyzed + signaled + throttled + errored
+
+Right now your service returns only signals, so you lose scan stats. Change it to return a scan report.
+
+Service
+type ScanReport = {
+  totals: {
+    attempted: number;
+    analyzed: number;
+    signaled: number;     // signals found before throttle
+    emitted: number;      // pushed to results (after throttle)
+    throttled: number;
+    errors: number;
+  };
+  signals: ReversalSignal[];
+  errors: { symbol: string; message: string }[];
+};
+
+async scanMultipleStocks(symbols: string[]): Promise<ScanReport> {
+  console.log(`🎯 REVERSAL SCANNER: Analyzing ${symbols.length} stocks...`);
+
+  const signals: ReversalSignal[] = [];
+  const errors: { symbol: string; message: string }[] = [];
+
+  const totals = {
+    attempted: symbols.length,
+    analyzed: 0,
+    signaled: 0,
+    emitted: 0,
+    throttled: 0,
+    errors: 0,
+  };
+
+  for (const symbol of symbols) {
+    try {
+      totals.analyzed++;
+
+      const signal = await this.analyzeStock(symbol);
+
+      if (signal) {
+        totals.signaled++;
+
+        const throttleCheck = this.shouldThrottleAlert(symbol, signal);
+        if (!throttleCheck.throttle) {
+          signals.push(signal);
+          totals.emitted++;
+        } else {
+          totals.throttled++;
+          console.log(`🔇 Throttled alert for ${symbol}`);
+        }
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    } catch (err: any) {
+      totals.errors++;
+      errors.push({ symbol, message: err?.message ?? String(err) });
+      console.error(`Error analyzing ${symbol}:`, err);
+    }
+  }
+
+  return { totals, signals, errors };
+}
+
+Route
+router.get("/scan", async (req: Request, res: Response) => {
+  const symbols = symbolsParam
+    ? symbolsParam.split(",").map(s => s.trim()).filter(Boolean)
+    : DEFAULT_SYMBOLS.slice(0, 10);
+
+  const report = await reversalDetectionService.scanMultipleStocks(symbols);
+
+  res.json({
+    summary: {
+      totalScanned: report.totals.attempted,
+      analyzed: report.totals.analyzed,
+      reversalsDetected: report.totals.emitted,
+      throttled: report.totals.throttled,
+      errors: report.totals.errors,
+    },
+    results: report.signals,
+    errorDetails: report.errors,
+  });
+});
+
+Frontend
+
+Keep your UI, but now it will show real scan counts:
+
+<div className="text-2xl font-bold">{scanData.summary.totalScanned}</div>
+<div className="text-sm text-gray-400">Stocks Scanned</div>
+
+
+(Optional additions)
+
+<div className="text-2xl font-bold">{scanData.summary.reversalsDetected}</div>
+<div className="text-sm text-gray-400">Reversals Detected</div>
+
+Also: you have a bug here
+
+In your route you wrote:
+
+reversalsDetected: reversals.length,
+
+
+…but reversals isn’t defined in the snippet. That would crash the route or return undefined depending on your real code.
+
+It should be one of:
+
+results.length (if results is signals)
+
+report.totals.emitted (if using the report approach)
+
+Quick sanity check (common gotcha)
+
+If symbolsParam is undefined, make sure you actually defined it:
+
+const symbolsParam = req.query.symbols as string | undefined;

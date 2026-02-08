@@ -1,0 +1,214 @@
+🔧 Make all step-by-step instructions visible in each module
+Goal (non-negotiable)
+For every strategy’s module, the UI must display the Overview, Prerequisites, Steps (numbered list), Notes, and Resources exactly as stored in the DB (or CMS override). Nothing hidden, truncated, or generic.
+
+1) Data: single source of truth
+Source tables:
+
+training_modules(track_id, slug, order, of, title, duration, overview text, prerequisites jsonb, steps jsonb, notes_prompt text, resources jsonb, additional_resources jsonb)
+
+cms_content(path text, data jsonb)
+
+Rule: CMS override first, DB fallback second.
+
+If some step-by-step text still lives in old React files or legacy JSON, migrate it to training_modules.steps now (see §2).
+
+2) Migration (if content exists in legacy files)
+Example Node script to upsert exact text into the DB:
+
+ts
+Copy
+Edit
+// scripts/migrate-training.ts
+import fs from "fs";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+
+(async () => {
+  const master = JSON.parse(fs.readFileSync("./data/trade_ninja_specific_training.json","utf-8")); // your pre-filled file
+  for (const track of master.tracks) {
+    // track
+    await supabase.from("training_tracks").upsert({ track_id: track.track_id, title: track.title });
+    // modules
+    for (const m of track.modules) {
+      await supabase.from("training_modules").upsert({
+        track_id: track.track_id,
+        slug: m.slug,
+        order: m.order, of: m.of,
+        title: m.title, duration: m.duration,
+        overview: m.overview,
+        prerequisites: m.prerequisites,
+        steps: m.steps,
+        notes_prompt: m.notes_prompt,
+        resources: m.resources || {},
+        additional_resources: m.additional_resources || []
+      });
+    }
+  }
+  console.log("Migration complete");
+})();
+If you don’t see the pre-filled JSON, ask—owner has it. No placeholders allowed.
+
+3) API must return all fields
+Create/confirm App Router endpoint:
+
+ts
+Copy
+Edit
+// app/api/training/[track]/[slug]/route.ts
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
+
+export async function GET(_: Request, { params }: { params: { track: string; slug: string } }) {
+  const { data: mod, error } = await supabase
+    .from("training_modules")
+    .select("*")
+    .eq("track_id", params.track)
+    .eq("slug", params.slug)
+    .single();
+
+  if (error || !mod) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  // CMS override
+  const path = `/academy/module/${params.track}/${params.slug}`;
+  const { data: cms } = await supabase.from("cms_content").select("data").eq("path", path).maybeSingle();
+
+  const merged = cms?.data ? { ...mod, ...cms.data } : mod;
+  return NextResponse.json(merged);
+}
+4) UI: render every section (no silent failures)
+tsx
+Copy
+Edit
+// app/academy/module/[track]/[slug]/page.tsx
+"use client";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+
+type Module = {
+  title: string; duration?: string; overview: string;
+  prerequisites: string[]; steps: string[];
+  notes_prompt?: string;
+  resources?: { video?: {label:string,url:string}, pdf?:{label:string,url:string}, community?:{label:string,url:string} };
+  additional_resources?: {label:string,url:string}[];
+};
+
+export default function ModulePage() {
+  const { track, slug } = useParams<{track:string;slug:string}>();
+  const router = useRouter();
+  const [mod, setMod] = useState<Module | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(`/api/training/${track}/${slug}`);
+        if (!res.ok) throw new Error(await res.text());
+        setMod(await res.json());
+      } catch (e:any) { setErr(e.message || "Load failed"); }
+    })();
+  }, [track, slug]);
+
+  if (err) return <div className="p-6 text-red-600">Error: {err}</div>;
+  if (!mod) return <div className="p-6">Loading…</div>;
+
+  return (
+    <div className="mx-auto max-w-3xl p-6">
+      <button className="mb-4 text-sm underline hover:opacity-80" onClick={() => router.push("/")}>
+        ← Back to Strategies
+      </button>
+
+      <h1 className="text-2xl font-semibold">{mod.title}</h1>
+      {mod.duration && <p className="text-sm opacity-70 mt-1">Duration: {mod.duration}</p>}
+
+      {/* Overview */}
+      <section className="mt-6">
+        <h2 className="text-xl font-semibold">Overview</h2>
+        <p className="mt-2 leading-relaxed whitespace-pre-wrap">{mod.overview}</p>
+      </section>
+
+      {/* Prerequisites */}
+      {Array.isArray(mod.prerequisites) && mod.prerequisites.length > 0 && (
+        <section className="mt-6">
+          <h2 className="text-xl font-semibold">Prerequisites</h2>
+          <ul className="list-disc pl-6 mt-2 space-y-1">
+            {mod.prerequisites.map((p, i) => <li key={i}>{p}</li>)}
+          </ul>
+        </section>
+      )}
+
+      {/* Steps */}
+      {Array.isArray(mod.steps) && mod.steps.length > 0 && (
+        <section className="mt-6">
+          <h2 className="text-xl font-semibold">Step-by-Step</h2>
+          <ol className="list-decimal pl-6 mt-2 space-y-2">
+            {mod.steps.map((s, i) => <li key={i} className="leading-relaxed whitespace-pre-wrap">{s}</li>)}
+          </ol>
+        </section>
+      )}
+
+      {/* Notes */}
+      {mod.notes_prompt && (
+        <section className="mt-6">
+          <h2 className="text-xl font-semibold">Notes</h2>
+          <p className="mt-2 italic">{mod.notes_prompt}</p>
+        </section>
+      )}
+
+      {/* Resources */}
+      {(mod.resources || mod.additional_resources)?.pdf || (
+        <section className="mt-6">
+          <h2 className="text-xl font-semibold">Resources</h2>
+          <ul className="list-disc pl-6 mt-2 space-y-1">
+            {mod.resources?.video && <li><a className="underline" href={mod.resources.video.url} target="_blank">{mod.resources.video.label}</a></li>}
+            {mod.resources?.pdf && <li><a className="underline" href={mod.resources.pdf.url} target="_blank">{mod.resources.pdf.label}</a></li>}
+            {mod.resources?.community && <li><a className="underline" href={mod.resources.community.url} target="_blank">{mod.resources.community.label}</a></li>}
+            {mod.additional_resources?.map((r, i) => <li key={i}><a className="underline" href={r.url} target="_blank">{r.label}</a></li>)}
+          </ul>
+        </section>
+      )}
+
+      {/* Print */}
+      <div className="mt-8">
+        <button onClick={() => window.print()} className="rounded px-3 py-2 border hover:bg-gray-50">
+          Print this module
+        </button>
+      </div>
+    </div>
+  );
+}
+Notes:
+• whitespace-pre-wrap ensures multi-line steps/overview show as written.
+• Back button uses the real index path (/ or /strategies)—update to match your app.
+
+5) Acceptance checks (must be green)
+sql
+Copy
+Edit
+-- Every module has a real overview (not blank/short)
+select track_id, slug from training_modules where length(coalesce(overview,'')) < 80;
+
+-- Every module has 5+ steps visible
+select track_id, slug from training_modules where jsonb_array_length(steps) < 5;
+
+-- API returns data for sample modules
+-- (replace with real ids that exist in your DB)
+-- Expect HTTP 200 with overview, prerequisites[], steps[]
+Manual UI checks:
+
+Open 5+ random modules across different strategies; confirm all sections render.
+
+Confirm “Back to Strategies” returns without lockups.
+
+Print preview shows clean, readable text.
+
+6) If still missing
+If the data exists in DB but not visible → fix UI mapping as shown.
+
+If the data doesn’t exist → import from the owner’s pre-filled JSON and re-seed.
+
+Bottom line:
+Transfer the exact step-by-step instructions that already exist for each strategy into training_modules.steps, and render them with the component above so they’re visible in the correct section on every module page.

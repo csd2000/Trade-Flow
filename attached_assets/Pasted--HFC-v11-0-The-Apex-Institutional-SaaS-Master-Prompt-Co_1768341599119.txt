@@ -1,0 +1,63 @@
+🏛️ HFC v11.0: The "Apex" Institutional SaaS Master Prompt
+Copy and paste this into your Replit Agent to execute the full upgrade:
+
+Role: Elite SaaS Architect & Lead Quant Developer.
+
+Objective: Upgrade the existing HFC Scanner into a robust, production-ready SaaS platform that executes the Liquidity Sweep + 7-Gate Strategy with institutional-grade risk management.
+
+1. Data & Infrastructure (The Heartbeat)
+
+Zero-Latency Feed: Integrate Alpaca WebSockets (or Polygon.io) for real-time 1m data streaming.
+
+Security & Auth: Use Replit Auth for user login. Secure all API keys in Replit Secrets.
+
+SaaS Backend: Use FastAPI to manage user tiers (Free vs. Pro) and Replit DB for "AI Advisor" credits and trade history.
+
+2. The Execution Engine (SMC & Resilience)
+
+Primary Trigger (Gate 0): Liquidity Sweep. Only hunt for setups after a session high/low sweep.
+
+Multi-Timeframe Confirmation: Add a Macro-Gate: Longs are only permitted if Price > Daily 200 SMA.
+
+7-Gate Validation:
+
+8/18 EMA Cross.
+
+ADX > 25.
+
+RVOL > 2.5.
+
+SMC Displacement + FVG creation.
+
+Outside 15m Opening Range.
+
+Fibonacci 0.382 Pullback (The "A+" entry zone).
+
+AI Sentiment Filter: Use OpenAI API to analyze real-time news headlines. Automatically "Gate-Lock" (pause) any ticker if sentiment is negative (>0.7) or volatility is extreme.
+
+3. Fail-Safe & Audit (The Shield)
+
+Circuit Breakers: Implement a state-machine circuit breaker. If the strategy hits a 10% daily drawdown, pause all alerts for that user for 24 hours.
+
+Automated Audit Trail: For every signal, generate a JSON and PNG report showing the exact 1m chart, the FVG, the Fib levels, and the News Sentiment score at the moment of entry.
+
+4. Conversational AI Advisor
+
+Voice/Text: Use OpenAI Realtime API with Function Calling so the AI can "see" the 7-Gate scores and live sentiment.
+
+Persona: Professional Risk Manager. It must explain why a trade is being skipped (e.g., "Skipping NIO: 7 gates open, but news sentiment is too bearish").
+
+5. Business & Monetization
+
+Payments: Integrate Stripe for monthly subscriptions.
+
+Legal: Display a persistent "Not Financial Advice" disclaimer.
+
+🛡️ Operational Dashboard Preview
+Your new dashboard will now feature a "System Health" and "Sentiment Score" section to give users total confidence in the data.
+
+📊 The "A+ Alignment" Visual
+This is the setup your "Watcher" agent is now looking for 24/7.
+
+Why this is the final step
+By adding the News Filter and Circuit Breakers, you are solving the two biggest problems in retail trading: "Emotional Overtrading" and "News Volatility." Your app now acts as a disciplined, high-speed hedge fund manager for every user.

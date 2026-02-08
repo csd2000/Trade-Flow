@@ -1,0 +1,282 @@
+🧠 MASTER PROMPT — “AI Profit Studio” (AI Power Profits–Style, Original Build)
+
+Role: You are a senior full-stack engineer & quant ML lead.
+Goal: Generate a Replit-ready profit-prediction & signal-scanning web app similar in function to “AI Power Profits,” but fully original (no copied code/branding).
+
+0) Guardrails
+
+Do not scrape or copy proprietary content, code, text, or brand assets.
+
+Include a visible disclaimer: “Educational only. Not financial advice.”
+
+Use legal/public data sources (e.g., yfinance, Alpha Vantage, Polygon, Tiingo) with API keys via env vars.
+
+1) Tech Stack & Project Layout
+
+Stack
+
+Backend: FastAPI (Python), Uvicorn
+
+ML: scikit-learn + (optional) LightGBM
+
+Data: pandas, numpy, yfinance (and pluggable API client)
+
+DB: SQLite for runs, metrics, watchlists, signals
+
+Frontend: HTML + TailwindCSS + Vanilla JS (no heavy framework)
+
+Charts: Chart.js (or Plotly.js)
+
+Packaging: Replit-ready (.replit, replit.nix, requirements.txt)
+
+Folders
+
+/ai-profit-studio
+  ├─ backend/
+  │   ├─ main.py           # FastAPI routes
+  │   ├─ data_utils.py     # data loaders, indicators
+  │   ├─ features.py       # feature engineering
+  │   ├─ models.py         # train/eval/save/load
+  │   ├─ backtest.py       # walk-forward CV & metrics
+  │   ├─ signals.py        # signal generation rules
+  │   ├─ db.py             # SQLite tables & CRUD
+  │   └─ config.py         # env, constants
+  ├─ frontend/
+  │   ├─ index.html
+  │   ├─ app.js
+  │   └─ styles.css        # Tailwind (CDN ok)
+  ├─ sample_data/          # small CSV for smoke test
+  ├─ README.md
+  ├─ requirements.txt
+  ├─ .replit
+  └─ replit.nix
+
+2) Core Capabilities (AI Power Profits–style)
+
+Data Ingestion
+
+GET /data/fetch?ticker=...&period=...&interval=... (yfinance)
+
+POST /data/upload_csv (detect columns; rename Close→adj_close if needed)
+
+Store raw pulls & metadata in SQLite (symbol, timeframe, timestamps).
+
+Feature Engineering
+
+Returns (1d/5d), rolling volatility, MA(5/20/50), EMA(12/26), RSI(14), MACD (12,26,9), Bollinger (20, 2σ), momentum(5/10), day-of-week.
+
+Output a clean numeric feature table + target_return (next-day % return).
+
+Configurable target horizon (1d, 5d) and classification threshold (e.g., >0).
+
+Model Training + Selection
+
+Candidates: RandomForestRegressor, LightGBMRegressor (if available).
+
+Time-series split (rolling) for validation; choose best by MAE (or Sharpe in backtest).
+
+Save: model + feature columns + metadata via joblib; record run in DB.
+
+Endpoints
+
+POST /train (args: ticker or CSV mode, target_horizon, test_size, candidate_models[])
+
+GET /metrics/last → MAE, R², MAPE, Sharpe (from backtest), last_train_time
+
+Prediction
+
+POST /predict → accepts latest engineered features (or auto-pull last bar)
+
+Returns: predicted_return, direction (up/down), confidence (scaled), and next-N-day estimate.
+
+Log every prediction (symbol, features hash, output).
+
+Signal Scanner (Watchlists)
+
+Create & manage watchlists.
+
+POST /watchlist (create/update)
+
+GET /scan?watchlist=...&ruleset=... → run indicator rules + model on all tickers and return ranked signals:
+
+Example bullish entry rules: price > MA20, RSI rising from <35 to >35, MACD histogram > 0, model_pred > threshold.
+
+Ranking: composite score = z(MACD_delta)+z(RSI_rate)+z(model_pred).
+
+Backtesting (Walk-Forward)
+
+Rolling windows: train on past N, test on next K; repeat.
+
+Track: CAGR, Sharpe, Max Drawdown, Win Rate, Avg Gain/Loss, Exposure, Turnover; include transaction cost.
+
+POST /backtest (args: ticker(s), horizon, ruleset, slippage, fee_bps)
+
+Return JSON + a timeseries equity curve for chart.
+
+Risk & Position Sizing
+
+Kelly fraction (capped), fixed-fractional, and volatility targeting.
+
+risk_profile: conservative / balanced / aggressive.
+
+Include simple portfolio simulator (cash → equity curve) in backtest.
+
+Explainability
+
+Feature importances; SHAP (if feasible) sample plot data.
+
+GET /explain/last → top features & contribution summary.
+
+3) Frontend UX (clean, light/dark)
+
+Header: Brand (placeholder “AI Profit Studio”), disclaimer badge.
+
+Tabs: Dashboard, Scanner, Backtest, Explain, Settings
+
+Dashboard
+
+Ticker input, period selector, “Fetch & Train,” metrics cards (MAE, R², Sharpe, MDD).
+
+Chart: price + predicted vs. actual overlay; small prediction widget for “Next day est: +0.47% (↑ likely)”.
+
+Scanner
+
+Watchlist manager (add/remove tickers).
+
+Rules dropdown (Bullish/Range/Breakout/Custom).
+
+Results table: Ticker, Score, Model Pred, RSI, MACD, Action (eye icon → details).
+
+Backtest
+
+Params (horizon, fees, slippage, risk profile).
+
+Equity curve chart + KPI grid (CAGR, Sharpe, MaxDD, WinRate).
+
+Explain
+
+Top features bar chart; recent prediction explanation list.
+
+Settings
+
+API keys, default periods, thresholds, classification vs regression mode.
+
+UI niceties
+
+Toasts for “Training complete,” “Scan finished.”
+
+Persist UI state in localStorage.
+
+Minimal Tailwind styling (CDN).
+
+4) Database (SQLite) Schema (outline)
+
+runs(id, symbol, started_at, finished_at, model_name, mae, r2, sharpe, params_json)
+
+models(id, path, created_at, features_json, symbol, horizon)
+
+predictions(id, symbol, ts, pred_return, direction, confidence, features_json, model_id)
+
+watchlists(id, name)
+
+watchlist_items(id, watchlist_id, symbol)
+
+datasets(id, symbol, period, interval, rows, pulled_at, source)
+
+backtests(id, created_at, params_json, kpis_json)
+
+Provide db.py helpers to init and CRUD.
+
+5) Endpoints (summary)
+
+GET /health
+
+GET /data/fetch
+
+POST /data/upload_csv
+
+POST /train
+
+GET /metrics/last
+
+POST /predict
+
+POST /watchlist, GET /watchlist, DELETE /watchlist/:id
+
+POST /scan
+
+POST /backtest
+
+GET /explain/last
+
+Return JSON with clear, typed fields and error messages.
+
+6) Indicators & Rules (examples)
+
+Compute at least:
+
+RSI(14), MACD(12,26,9), BB(20,2), MA(5/20/50), EMA(12/26), ATR(14), returns, volatility(10)
+Rulesets (JSON-configurable):
+
+Bullish: price > MA20, RSI rising past 35, MACD > 0, model_pred > 0
+
+Breakout: price > BB upper & volume > 1.5× avg & model_pred > threshold
+
+Mean-revert: price < BB lower, RSI < 30 & turning up
+
+7) ML & Backtest Details
+
+Train/test split: time-ordered; optional Walk-Forward Cross-Validation.
+
+Pick best model by lowest MAE (regression) or highest F1 (classification).
+
+Backtest: apply signal rules + position sizing; compute CAGR, Sharpe, MaxDD, WinRate; include fees/slippage.
+
+8) Replit Compatibility
+
+.replit runs: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+
+replit.nix sets Python + build deps.
+
+requirements.txt includes:
+fastapi, uvicorn[standard], pydantic, scikit-learn, lightgbm, pandas, numpy, joblib, yfinance, python-multipart, sqlite-utils
+
+9) Deliverables (what to output)
+
+Full project tree above with complete code in each file.
+
+README.md with:
+
+One-click Replit instructions
+
+Local run commands
+
+API docs (each endpoint with example curl)
+
+Disclaimer text block
+
+A small sample_data/*.csv for smoke tests.
+
+Postman collection (optional JSON) for quickly testing endpoints.
+
+Clear comments in code, especially around: feature engineering, model persistence, scanner scoring, backtest logic.
+
+10) Acceptance Criteria (must pass)
+
+App boots on Replit, /health returns {status:"ok"}.
+
+/train on AAPL (1y) completes < ~60s and produces non-empty metrics.
+
+/predict returns a float predicted_return and direction.
+
+Scanner returns a ranked list for a 3-ticker watchlist.
+
+Backtest returns equity curve points and KPIs.
+
+Frontend shows charts & metrics cleanly; dark mode toggle works.
+
+No proprietary references, names, or assets.
+
+Command to the generator:
+
+Build the complete “AI Profit Studio” app per this prompt — including all code files, charts, endpoints, DB models, and Replit configs — and ensure it runs end-to-end with sample data and a clear README. Keep everything original and compliant.

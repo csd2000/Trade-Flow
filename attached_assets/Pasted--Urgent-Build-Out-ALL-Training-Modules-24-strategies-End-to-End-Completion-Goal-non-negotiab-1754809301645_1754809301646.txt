@@ -1,0 +1,244 @@
+🚨 Urgent: Build Out ALL Training Modules (24 strategies) — End-to-End Completion
+Goal (non-negotiable):
+Deliver a fully working training system for 24 strategies, each with complete step-by-step written content, working navigation (incl. Back to Strategies), performant pages, admin editing, APIs, and database persistence. If original content exists, import it; if not, rebuild from the original prompts (text only). Do not break anything that already works.
+
+1) Scope you must deliver
+24 strategies × training tracks
+
+Each strategy must be linked to a track_id and have a first_module_slug.
+
+Each track must contain 6–8 modules (as appropriate), and every module must include:
+
+title, duration, overview (paragraphs, not placeholders)
+
+prerequisites[] (2+ items)
+
+steps[] (5+ concrete steps in plain sentences)
+
+notes_prompt
+
+resources (video/pdf/community OR leave empty object {} if truly unavailable)
+
+additional_resources[] optional
+
+order, of, slug, track
+
+If you can’t find the original text, rebuild from the original prompts (text only).
+
+Pages & routing
+
+Strategy cards → “Start Training” must route to
+/academy/module/{track_id}/{first_module_slug}
+
+Dynamic module page:
+/academy/module/[track]/[slug]
+
+Must render Overview, Prereqs, Steps, Notes prompt, Resources, Additional Resources, Prev/Next, and Print.
+
+Back to Strategies button must return to the main strategies index without freezing.
+
+Admin & CMS
+
+/admin locked to emails in ADMIN_EMAILS.
+
+/admin/content loads/saves JSON overrides to cms_content at path:
+/academy/module/{track_id}/{module_slug}
+
+Public pages must read CMS override first, then fallback to DB.
+
+APIs & DB
+
+GET /api/training/[track]/[slug] → returns the module JSON from DB (with override if present).
+
+DB tables required (Supabase/Postgres):
+
+training_tracks(track_id, title)
+
+training_modules(track_id, slug, order, of, title, duration, overview, prerequisites jsonb, steps jsonb, notes_prompt, resources jsonb, additional_resources jsonb, previous jsonb, next jsonb)
+
+strategies(id, slug, title, category, risk, roi_range, tags jsonb, summary, track_id, first_module_slug)
+
+Plus cms_content and admin_audit_log (already provided).
+
+Performance & UX
+
+No page lockups; smooth back/forward navigation.
+
+Side menu auto-hide + hover states; modern, readable theme.
+
+Printing yields legible pages (no dark backgrounds on print CSS).
+
+Keep anything that already works intact.
+
+2) What you claimed vs. what I need verified
+You stated:
+
+“Seeded all 24 strategies… Created 192 training modules (8 per strategy)… Fixed routing… training-system-test…”
+
+Action: Prove it with the checks below. If any check fails, finish the build and provide evidence.
+
+3) Verification commands (copy & run)
+3.1 Strategies linked to training
+sql
+Copy
+Edit
+-- Every one of the 24 strategies must have a track and a first module
+select id, slug, track_id, first_module_slug
+from public.strategies
+order by id;
+
+-- Missing links?
+select slug from public.strategies
+where track_id is null or first_module_slug is null;
+3.2 Module counts per track
+sql
+Copy
+Edit
+-- Expect 6–8 modules per track; if you promised 8, verify 8
+select track_id, count(*) as modules
+from public.training_modules
+group by track_id
+order by track_id;
+
+-- Any track under 6 modules = not built
+select track_id from public.training_modules
+group by track_id
+having count(*) < 6;
+3.3 Content completeness
+sql
+Copy
+Edit
+-- Modules missing real content (overview blank or < 80 chars)
+select track_id, slug, length(coalesce(overview,'')) as ov_len
+from public.training_modules
+where length(coalesce(overview,'')) < 80;
+
+-- Steps must be 5+ and non-empty sentences
+select track_id, slug, jsonb_array_length(steps) as steps_len
+from public.training_modules
+where jsonb_array_length(steps) < 5;
+3.4 API health
+bash
+Copy
+Edit
+# Replace with an actual track + slug that should exist
+curl -sS https://YOUR-APP/ api/training/exit-strategy-training/exit-module-1 | jq .
+curl -sS https://YOUR-APP/ api/training/fc-intelligent-training/fc-module-1 | jq .
+3.5 Routes & UI (manual)
+Visit:
+
+/ (strategies index)
+
+Click Start Training on multiple cards (FC Intelligent Decision, Exit Strategy, Passive Income, Warrior Trading, 30SecondTrader, etc.)
+
+On a module page, click Back to Strategies → must land back on the index without freeze.
+
+Click Next Module / Previous Module across an entire track.
+
+4) If content is missing — how to rebuild (schema)
+Use text only, following this JSON shape (per module):
+
+json
+Copy
+Edit
+{
+  "slug": "fc-module-1",
+  "track": "fc-intelligent-training",
+  "order": 1,
+  "of": 8,
+  "title": "Signal Inputs & Data Hygiene",
+  "duration": "15 min",
+  "overview": "Clear 2–3 sentences explaining the objective and context.",
+  "prerequisites": ["List 2–4 concrete prerequisites"],
+  "steps": [
+    "Step 1 in full sentence.",
+    "Step 2 in full sentence.",
+    "Step 3 in full sentence.",
+    "Step 4 in full sentence.",
+    "Step 5 in full sentence."
+  ],
+  "notes_prompt": "One sentence prompt for journaling.",
+  "resources": { "video": {"label": "Walkthrough", "url": "https://..."} },
+  "additional_resources": []
+}
+Then upsert to training_modules. (You can also seed from trade_ninja_master_training_v3.json I supplied.)
+
+5) Known required fixes
+Back to Strategies: Ensure button routes to the index page used by the live app (no stale route names). Example React (Next.js):
+
+tsx
+Copy
+Edit
+import { useRouter } from "next/navigation";
+const router = useRouter();
+<button onClick={() => router.push("/")}>Back to Strategies</button>
+If your index is /strategies, update accordingly.
+
+Avoid lockups:
+
+Ensure module page data fetch is client-safe and resilient (handle 404/500 gracefully).
+
+Don’t chain state updates in effects that cause infinite re-renders.
+
+Turn off dev overlay in prod builds.
+
+Admin:
+
+/admin must show Content Editor and Settings.
+
+Content Editor loads and saves JSON to cms_content for any path.
+
+Public pages first read CMS override at /academy/module/{track_id}/{slug}.
+
+6) Deliverables (what I expect back)
+DB proof:
+
+Results/screenshots for the SQL checks above (module counts, missing links, content length, steps length).
+
+Live routes:
+
+Working URLs for at least 6 tracks’ module #1 pages (including fc-intelligent-training/fc-module-1).
+
+UI demo:
+
+A quick screen recording (or link to your “training-system-test” page) showing:
+
+Start Training → Module
+
+Prev/Next working
+
+Back to Strategies working with no freeze
+
+Admin demo:
+
+/admin/content editing a module and seeing the override live on the public page.
+
+7) Important constraints
+Do not remove or break anything that already works.
+
+If you cannot find original module text, rebuild from the original prompts today and seed the DB so pages render complete, printable content. No placeholders.
+
+8) (Optional) Assets available from me
+Master training DB with many tracks populated: trade_ninja_master_training_v3.json
+
+Strategies mapping (24 cards → module 1):
+strategies_seed_with_tracks_v3.sql / .json
+
+Printable PDFs for each module (can be linked as resources.pdf)
+
+I’m expecting completion that passes all verification checks above. If a check fails, fix and re-run until it’s clean.
+
+
+
+
+
+
+
+
+
+
+Ask ChatGPT
+
+
+
+

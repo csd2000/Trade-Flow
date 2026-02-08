@@ -1,0 +1,65 @@
+{
+  "tracks": [
+    {
+      "track_id": "comprehensive-trading-master",
+      "title": "Comprehensive Trading Master",
+      "modules": [
+        {
+          "slug": "strategy-overview-fundamentals",
+          "track": "comprehensive-trading-master", 
+          "order": 1,
+          "of": 8,
+          "title": "Strategy Overview & Fundamentals",
+          "duration": "15 minutes",
+          "overview": "Master the core foundations of successful trading strategies, risk assessment, and market psychology. This module establishes the fundamental principles that underpin all profitable trading approaches.",
+          "prerequisites": [
+            "Basic understanding of financial markets",
+            "Access to trading platform or demo account",
+            "Notebook for strategy documentation",
+            "2-3 hours available for complete module series"
+          ],
+          "steps": [
+            "Review the 5 pillars of successful trading strategies: Edge, Risk Management, Psychology, Execution, and Review",
+            "Identify your trading personality: Day trader, Swing trader, Position trader, or Scalper",
+            "Define your risk tolerance: Conservative (1-2% per trade), Moderate (2-3%), Aggressive (3-5%)",
+            "Set realistic profit expectations based on account size and time commitment",
+            "Document your trading goals: Monthly targets, annual objectives, and milestone markers",
+            "Choose your primary markets: Crypto, Forex, Stocks, or Commodities",
+            "Establish your trading schedule: Market hours you'll be active and time zones",
+            "Create your trading workspace: Charts, news feeds, and analysis tools setup"
+          ],
+          "notes_prompt": "Write down your trading personality type, risk tolerance level, and primary market focus. Note any questions about strategy fundamentals.",
+          "resources": {
+            "video": {
+              "label": "Strategy Fundamentals Video",
+              "url": "https://example.com/strategy-fundamentals-video"
+            },
+            "pdf": {
+              "label": "Trading Psychology Guide",
+              "url": "https://example.com/trading-psychology-guide.pdf"
+            },
+            "community": {
+              "label": "Strategy Discussion Forum",
+              "url": "https://example.com/strategy-forum"
+            }
+          },
+          "additional_resources": [
+            {
+              "label": "Risk Management Calculator",
+              "url": "https://example.com/risk-calculator"
+            },
+            {
+              "label": "Trading Plan Template",
+              "url": "https://example.com/trading-plan-template"
+            }
+          ],
+          "previous": null,
+          "next": {
+            "label": "Next: Market Analysis & Setup",
+            "slug": "market-analysis-setup"
+          }
+        }
+      ]
+    }
+  ]
+}

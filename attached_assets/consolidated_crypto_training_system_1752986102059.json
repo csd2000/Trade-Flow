@@ -1,0 +1,70 @@
+{
+  "sections": [
+    {
+      "id": "project-discovery",
+      "title": "\ud83d\udd0d Project Discovery",
+      "description": "Explore new DeFi projects, airdrops, trending protocols, and yield opportunities.",
+      "features": [
+        "Filter by chain, APY, sector, launch status",
+        "Tag: Airdrop Eligible, Real Yield, Trending",
+        "Connect to Passive Income strategies"
+      ],
+      "data_source": "projects"
+    },
+    {
+      "id": "passive-income-training",
+      "title": "\ud83d\udcd8 Passive Income Training",
+      "description": "Learn how to earn crypto daily using beginner to pro-level DeFi strategies.",
+      "features": [
+        "Step-by-step guides",
+        "Filter by ROI, Risk, Chain",
+        "Link to projects in discovery"
+      ],
+      "data_source": "strategies"
+    },
+    {
+      "id": "yield-pools",
+      "title": "\ud83d\udcca Yield Pools",
+      "description": "View the best yield opportunities by TVL, platform, and risk level.",
+      "features": [
+        "Real-time APY data",
+        "Grouped by network and protocol",
+        "Sort: Highest Yield, Safest"
+      ],
+      "data_source": "vaults"
+    },
+    {
+      "id": "portfolio-tracker",
+      "title": "\ud83d\udcc1 Portfolio Tracker",
+      "description": "Connect your wallet to track your DeFi strategies, daily yield, and ROI.",
+      "features": [
+        "Wallet sync",
+        "Active strategy breakdown",
+        "Exit Now button integration"
+      ],
+      "data_source": "portfolio"
+    },
+    {
+      "id": "exit-strategy",
+      "title": "\ud83d\udca1 Exit Strategy Wizard",
+      "description": "Plan when and how to safely exit the market with custom alerts and DCA tools.",
+      "features": [
+        "Auto alert setup (Email, Telegram)",
+        "Custom DCA plan",
+        "Historical top signal analysis"
+      ],
+      "data_source": "alerts"
+    },
+    {
+      "id": "education-safety",
+      "title": "\ud83e\udde0 Education + Safety",
+      "description": "Master DeFi safely with videos, PDF guides, rug check tools, and smart contract audits.",
+      "features": [
+        "Wallet hygiene lessons",
+        "Rug check integrations",
+        "Beginner to advanced education"
+      ],
+      "data_source": "education"
+    }
+  ]
+}

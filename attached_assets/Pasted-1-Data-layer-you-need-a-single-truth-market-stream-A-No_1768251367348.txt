@@ -1,0 +1,219 @@
+1) Data layer: you need a “single truth” market stream
+A. Normalize everything into one internal format
+
+Create a unified event bus (WebSocket → queue → processors) and standardize:
+
+symbol (with mapping per venue: e.g., BTCUSDT vs BTC-USD, SPY vs SPY.US)
+
+timestamp in UTC
+
+type: trade, quote, candle, darkpool_trade, options_trade, news, sentiment, whale_tx
+
+source, latency_ms, quality_flags
+
+B. Use WebSockets for real-time, REST only for backfill
+
+Binance WS: primary for crypto real-time trades/klines
+
+Polygon WS: primary for equities/options + dark pool prints (where available)
+
+Alpha Vantage: best treated as backup / historical / slow (rate-limited and not “true real-time” for many use cases)
+
+C. Timeframe engine
+
+Even if feeds provide 1m candles, you still need your own aggregator so you can:
+
+rebuild candles if packets drop
+
+generate consistent 5m/15m across all venues
+
+compute rolling metrics (range/body/volume percentiles)
+
+2) Dark pool + institutional activity scanning (Polygon)
+
+What you need to do well:
+
+Ingest dark pool prints (where Polygon provides them) as their own stream type.
+
+Join each print to context:
+
+nearest lit-market candle (same symbol)
+
+relative size vs average trade size / average 1m volume
+
+location vs key levels (VWAP, PDH/PDL, ORH/ORL, swing levels)
+
+Detect “institutional footprints” patterns:
+
+Print clusters: multiple large prints within N minutes
+
+Absorption: big prints + price not moving much (demand/supply absorbing)
+
+Markup/markdown after prints: prints occur, then displacement occurs shortly after
+
+Support/resistance reinforcement: prints near level + repeated rejections
+
+What to alert
+
+“Dark pool cluster near PDH with absorption”
+
+“Large print at range low + reclaim”
+
+“Prints increasing while price compresses (possible expansion soon)”
+
+Key reality check: dark pool prints are useful context, but they’re not a magic “buy/sell” signal alone. Your edge comes from combining prints + structure + liquidity + volatility regime.
+
+3) Stop-loss hunting / liquidity-taking detection (multi-asset)
+
+This is the most transferable “institutional” detector across stocks, crypto, forex, futures.
+
+Required components
+
+Liquidity level mapper (per symbol, per timeframe):
+
+equal highs/lows (tolerance based)
+
+prior day high/low (PDH/PDL)
+
+session high/low + opening range edges
+
+swing highs/lows (pivot logic)
+
+Sweep detector
+
+price trades through the level by X ticks/%/ATR
+
+then reclaims back across it within Y bars/seconds
+
+with wick signature + range expansion
+
+Confirmation options
+
+LTF CHOCH/BOS
+
+displacement candle away from sweep point
+
+volume spike (crypto/stocks), tick-volume proxy (forex)
+
+What to alert
+
+“Equal lows sweep + reclaim (bullish)”
+
+“PDL raid + BOS up”
+
+“Session high sweep + failure (bearish trap)”
+
+4) “Rug pull / trap” scanning (stocks + crypto)
+A. CEX/Equities “trap” signature (real-time)
+
+breakout above a defined level (range high, ORB high, key swing)
+
+lack of follow-through (no continuation within N bars)
+
+reversal back below breakout level
+
+bonus strength if it coincides with:
+
+dark pool cluster (equities)
+
+news headline shock (CryptoPanic)
+
+volatility expansion after compression
+
+Alert
+
+“Breakout failure trap (likely liquidity grab)”
+
+B. DEX rug pulls (important)
+
+True DEX rug pulls are on-chain events (liquidity removed, minting, blacklist, etc.).
+CoinGecko OHLC won’t reliably catch the cause early.
+If DEX rugs are a priority, your app really needs at least one on-chain source:
+
+mempool / contract events (chain RPC + indexer), or a rug-specific API
+
+(You can still keep your current list, but be aware: with CoinGecko alone you’ll mostly detect the dump after it starts.)
+
+5) Options “institutional aggression” (Polygon options)
+
+To scan options effectively, you need:
+
+unusual options activity (UOA):
+
+volume / OI spikes
+
+sweeps (if available in feed)
+
+premium size thresholds
+
+direction inference (imperfect, but workable):
+
+near-side/at-ask vs at-bid
+
+time-to-expiry clustering (0DTE behavior)
+
+underlying context:
+
+underlying at key liquidity level
+
+dark pool prints near same time
+
+Alerts
+
+“UOA call sweep near PDL reclaim”
+
+“Put premium spike as price breaks structure”
+
+6) News + sentiment (Alternative.me, CryptoPanic, Whale Alert)
+
+Treat these as risk modifiers, not “signals.”
+
+Fear & Greed: regime filter (risk-on/risk-off)
+
+CryptoPanic: event trigger (headline spike → volatility)
+
+Whale Alert: flow spike → “watchlist heat” (best used to increase monitoring + tighten thresholds)
+
+Best practice
+
+Convert them into a small score adjustment:
+
++10 score if major news + technical setup aligns
+
+-10 score if headline risk contradicts the setup
+
+Whale transactions only boost if near key levels + structure agrees
+
+7) AI layer (Claude) — how to use it without ruining speed
+
+Don’t put Claude in the critical path for entry signals.
+
+Use Claude for:
+
+post-signal explanation (“why this alert fired”)
+
+headline summarization + sentiment classification from CryptoPanic
+
+scenario labeling (trap vs continuation probabilities) using your computed features
+
+Your engine should still fire alerts from deterministic logic. Claude enhances understanding and reduces user confusion.
+
+8) The “must-have” system features for real-time scanning
+
+Symbol mapping + venue routing (same asset, different codes)
+
+Latency monitoring (don’t trade on stale feeds)
+
+Deduping / gap fill for candles
+
+Quality flags (rate limits hit, delayed feed, missing bars)
+
+Configurable thresholds per market
+
+forex behaves differently than crypto, etc.
+
+Alert throttling + grouping
+
+20 alerts in 1 minute isn’t useful; cluster them by “event episode”
+
+If you want the fastest next step

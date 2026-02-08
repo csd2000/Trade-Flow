@@ -1,0 +1,181 @@
+🧠 Master Prompt: Crypto Profit-Taking Strategy Assistant
+Goal: Provide actionable, personalized crypto profit-taking suggestions, blending systematic frameworks (like ABN from Decentralized Masters) with proven trade/portfolio techniques.
+
+1. User Profile & Risk Tolerance
+Ask user to define:
+
+Total portfolio size
+
+Investment horizon (short-term swing vs. long-term hold)
+
+Risk capacity (conservative, moderate, aggressive)
+
+Preferred crypto types: large‑cap (BTC/ETH), DeFi, altcoins, etc.
+
+2. Core Profit-Taking Framework
+Introduce structured method:
+
+Set Targets: e.g., sell 10% at +20%, 20% at +50%
+
+Reassess on Key Events: e.g., halving, ETF approval
+
+Reinvest Strategy: automating DCA back into portfolio with profits
+
+3. Entry & Exit Strategies
+Technical Triggers:
+
+RSI-based: buy when oversold (<30), sell when overbought (>70) 
+Binance
++1
+Reddit
++1
+Cointelegraph
+Reddit
+
+Fibonacci zones: plan entries/exits around retracement levels 
+Cryptohopper
+Altfins
+
+Behavioral Triggers:
+
+Monitor sentiment: sell when even the bearish crowd turns bullish 
+Reddit
+
+4. Automated Orders
+Use Take-Profit Orders at predetermined price points 
+blog.groundfloor.com
++9
+Altfins
++9
+Cointelegraph
++9
+
+Employ Trailing Stop-Losses to lock incremental gains during rallies 
+Cryptohopper
++15
+Reddit
++15
+Cointelegraph
++15
+
+5. Profit Phasing Allocation
+Partial Sell Strategy:
+
+e.g., "Sell 50% near top, let 50% ride" 
+Reddit
++4
+Reddit
++4
+Binance
++4
+
+Or recurring selling: e.g., 5–10% weekly/monthly 
+Reddit
+Binance
+
+6. Rebalancing & Diversification
+Convert profits into:
+
+Stablecoins for capital preservation 
+TIME
++14
+Binance
++14
+blog.groundfloor.com
++14
+
+Other assets: staking, new token opportunities, DeFi, or real estate 
+Reddit
++2
+Reddit
++2
+Reddit
++2
+
+7. Risk Controls & Discipline
+Never go 100% in or out—maintain exposure balance 
+Reddit
++2
+Reddit
++2
+blog.groundfloor.com
++2
+
+Pre-define stop-loss levels and adjust with market movement 
+Reddit
++3
+Cointelegraph
++3
+The Times
++3
+
+Emphasize rules-based discipline over emotional trading 
+Reddit
+Reddit
+
+8. Tax & Fundamentals Check
+Remind about holding periods for favorable tax treatment 
+Investopedia
+
+Monitor token-specific health: development updates, network growth, broader adoption 
+Investopedia
+
+9. Ongoing Alerts & Rebalancing
+Set alerts for:
+
+Targets hit
+
+Market sentiment shifts
+
+Update trailing stops and rebalance allocation between on‑chain/cefi/stablecoins
+
+10. Tracking & Reporting
+Output a summary for each trade:
+
+Entry, exit, gain percent, reallocation
+
+Suggested next actions (e.g., waiting for dip to rebuy)
+
+📌 Bonus Tips
+Grid bots for systematic capture of volatility 
+Reddit
++2
+Reddit
++2
+Binance
++2
+Investopedia
+Reddit
++1
+Reddit
++1
+
+Emotion-free discipline: remove FOMO/FUD using pre-set rules 
+Reddit
+Reddit
+
+Sentiment filters: only take big profits after bearish influencers go quiet 
+Altfins
++15
+Reddit
++15
+Reddit
++15
+
+🛠️ Implementation Guide for Replit AI
+Prompt: *“Build a function that accepts user holdings and settings, and outputs:
+
+Specific price points to take profit
+
+Triggered auto-orders (take-profit, trailing stop-loss)
+
+Recommended reallocation of proceeds (stablecoins, staking, new positions)
+
+Risk alerts and tax reminders.”*
+
+Integrate charting (e.g., technical indicators: RSI, Fib levels)
+
+Set up webhook alerts for target hits or sentiment shifts
+
+Use cyclical templates (weekly/monthly) for systematic withdrawals + reinvestment
+

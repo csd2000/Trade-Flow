@@ -1,0 +1,186 @@
+[
+  {
+    "module": 1,
+    "title": "Foundation of Strategy Building",
+    "overview": "Learn the core principles of creating a profitable crypto trading strategy.",
+    "prerequisites": "Basic knowledge of cryptocurrency markets.",
+    "duration": "20 minutes",
+    "content": [
+      "Understand the concept of edge in trading.",
+      "Identify your risk tolerance and trading style.",
+      "Familiarize yourself with market types: trending, ranging, volatile."
+    ],
+    "notes": "A good strategy is built around your personal goals and the market's behavior.",
+    "resources": [
+      {
+        "type": "Video Tutorial",
+        "link": "https://example.com/video-strategy-foundation"
+      },
+      {
+        "type": "Strategy Documentation",
+        "link": "https://example.com/strategy-foundation.pdf"
+      }
+    ]
+  },
+  {
+    "module": 2,
+    "title": "Technical Indicators & Tools",
+    "overview": "Master the key technical tools to support your trading decisions.",
+    "prerequisites": "Completion of Module 1.",
+    "duration": "25 minutes",
+    "content": [
+      "Learn about Moving Averages, RSI, MACD.",
+      "Explore support and resistance levels.",
+      "Practice using a charting platform like TradingView."
+    ],
+    "notes": "Only use indicators that complement your strategy.",
+    "resources": [
+      {
+        "type": "Video Tutorial",
+        "link": "https://example.com/video-indicators"
+      },
+      {
+        "type": "Strategy Documentation",
+        "link": "https://example.com/indicators-guide.pdf"
+      }
+    ]
+  },
+  {
+    "module": 3,
+    "title": "Backtesting Strategies",
+    "overview": "Evaluate your strategy using historical data.",
+    "prerequisites": "Knowledge of charting tools and indicators.",
+    "duration": "30 minutes",
+    "content": [
+      "Select a market and timeframe.",
+      "Mark entries and exits on historical charts.",
+      "Record results and adjust parameters."
+    ],
+    "notes": "Backtesting provides a simulated performance before live trading.",
+    "resources": [
+      {
+        "type": "Video Tutorial",
+        "link": "https://example.com/video-backtesting"
+      },
+      {
+        "type": "Strategy Documentation",
+        "link": "https://example.com/backtesting-checklist.pdf"
+      }
+    ]
+  },
+  {
+    "module": 4,
+    "title": "Paper Trading",
+    "overview": "Practice your strategy without risking capital.",
+    "prerequisites": "Completed backtesting with positive results.",
+    "duration": "15 minutes",
+    "content": [
+      "Set up a paper trading account.",
+      "Execute trades according to your strategy rules.",
+      "Analyze results and fine-tune."
+    ],
+    "notes": "Paper trading bridges the gap between theory and live markets.",
+    "resources": [
+      {
+        "type": "Video Tutorial",
+        "link": "https://example.com/video-papertrading"
+      },
+      {
+        "type": "Strategy Documentation",
+        "link": "https://example.com/papertrading-guide.pdf"
+      }
+    ]
+  },
+  {
+    "module": 5,
+    "title": "Risk Management",
+    "overview": "Learn to control losses and maximize gains.",
+    "prerequisites": "Modules 1\u20134 completed.",
+    "duration": "25 minutes",
+    "content": [
+      "Set stop-loss and take-profit levels.",
+      "Determine position sizing.",
+      "Diversify across assets and strategies."
+    ],
+    "notes": "Risk management ensures survival during losing streaks.",
+    "resources": [
+      {
+        "type": "Video Tutorial",
+        "link": "https://example.com/video-riskmanagement"
+      },
+      {
+        "type": "Strategy Documentation",
+        "link": "https://example.com/riskmanagement.pdf"
+      }
+    ]
+  },
+  {
+    "module": 6,
+    "title": "Live Trading Setup",
+    "overview": "Prepare your live account for strategy execution.",
+    "prerequisites": "Positive performance in paper trading.",
+    "duration": "20 minutes",
+    "content": [
+      "Fund your trading account.",
+      "Install necessary tools and alerts.",
+      "Test order execution speed and reliability."
+    ],
+    "notes": "Always start with small capital when going live.",
+    "resources": [
+      {
+        "type": "Video Tutorial",
+        "link": "https://example.com/video-livetrading"
+      },
+      {
+        "type": "Strategy Documentation",
+        "link": "https://example.com/livetrading-checklist.pdf"
+      }
+    ]
+  },
+  {
+    "module": 7,
+    "title": "Monitoring & Adjusting",
+    "overview": "Track your performance and adapt to market changes.",
+    "prerequisites": "Live trading experience.",
+    "duration": "15 minutes",
+    "content": [
+      "Review trade logs weekly.",
+      "Identify patterns in wins and losses.",
+      "Adjust parameters if performance declines."
+    ],
+    "notes": "Continuous improvement is key to long-term success.",
+    "resources": [
+      {
+        "type": "Video Tutorial",
+        "link": "https://example.com/video-monitoring"
+      },
+      {
+        "type": "Strategy Documentation",
+        "link": "https://example.com/monitoring-guide.pdf"
+      }
+    ]
+  },
+  {
+    "module": 8,
+    "title": "Scaling Up",
+    "overview": "Increase your capital allocation safely.",
+    "prerequisites": "Consistent profitability for 3+ months.",
+    "duration": "20 minutes",
+    "content": [
+      "Gradually increase position sizes.",
+      "Diversify into new markets.",
+      "Consider automation tools."
+    ],
+    "notes": "Scaling should never compromise risk management.",
+    "resources": [
+      {
+        "type": "Video Tutorial",
+        "link": "https://example.com/video-scaling"
+      },
+      {
+        "type": "Strategy Documentation",
+        "link": "https://example.com/scaling-strategies.pdf"
+      }
+    ]
+  }
+]

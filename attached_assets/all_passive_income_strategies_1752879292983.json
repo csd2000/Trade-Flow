@@ -1,0 +1,290 @@
+[
+  {
+    "id": "curve-dai-usdc",
+    "name": "Curve DAI/USDC LP + Convex",
+    "slug": "curve-dai-usdc",
+    "chain": "Ethereum",
+    "risk": "Low",
+    "roi_range": "4\u201312% APY",
+    "platform": "Curve + Convex",
+    "network": "Ethereum",
+    "tools": [
+      "Curve.fi",
+      "ConvexFinance",
+      "MetaMask"
+    ],
+    "steps": [
+      "Install MetaMask and fund your wallet with ETH.",
+      "Go to curve.fi and select the DAI/USDC pool.",
+      "Deposit equal amounts of DAI and USDC.",
+      "Stake LP tokens on ConvexFinance.com for boosted yield.",
+      "Track your yield on both Curve and Convex dashboards."
+    ],
+    "exit_plan": [
+      "Unstake from Convex.",
+      "Remove liquidity from Curve.",
+      "Convert back to DAI/USDC.",
+      "Bridge to fiat or CeFi wallet (e.g. Coinbase)."
+    ],
+    "risks": [
+      "Impermanent loss (minimal for stables)",
+      "Smart contract risk",
+      "Platform updates (check weekly)"
+    ],
+    "video_url": "https://www.youtube.com/watch?v=example1",
+    "guide_url": "https://example.com/curve-guide.pdf",
+    "audit_url": "https://defisafety.com/app/project/curve",
+    "tags": [
+      "stablecoins",
+      "lp",
+      "low-risk"
+    ],
+    "created_at": "2025-07-18T22:51:17.859973"
+  },
+  {
+    "id": "beefy-usdt-busd",
+    "name": "Auto-Compounding Vault (Beefy USDT-BUSD)",
+    "slug": "beefy-usdt-busd",
+    "chain": "BNB Chain",
+    "risk": "Medium",
+    "roi_range": "20\u201340% APY",
+    "platform": "Beefy Finance",
+    "network": "BNB Chain",
+    "tools": [
+      "Beefy Finance",
+      "MetaMask",
+      "Binance"
+    ],
+    "steps": [
+      "Add BNB Chain to MetaMask.",
+      "Swap to USDT and BUSD using PancakeSwap.",
+      "Deposit into Beefy's USDT-BUSD LP vault.",
+      "Enable auto-compounding.",
+      "Track your vault's growth on Beefy dashboard."
+    ],
+    "exit_plan": [
+      "Withdraw from Beefy vault.",
+      "Unzap LP into USDT and BUSD.",
+      "Send funds to Binance or bridge to Ethereum for fiat."
+    ],
+    "risks": [
+      "Impermanent loss",
+      "Smart contract vulnerabilities",
+      "High gas fees during peak times"
+    ],
+    "video_url": "https://www.youtube.com/watch?v=example2",
+    "guide_url": "https://example.com/beefy-guide.pdf",
+    "audit_url": "https://defisafety.com/app/project/beefy-finance",
+    "tags": [
+      "auto-compound",
+      "bnb-chain",
+      "medium-risk"
+    ],
+    "created_at": "2025-07-18T22:51:17.859984"
+  },
+  {
+    "id": "aave-lending-polygon",
+    "name": "Lending Stablecoins on Aave",
+    "slug": "aave-lending-polygon",
+    "chain": "Polygon",
+    "risk": "Low",
+    "roi_range": "3\u20137% APY",
+    "platform": "Aave",
+    "network": "Polygon",
+    "tools": [
+      "Aave",
+      "MetaMask",
+      "Polygon Bridge"
+    ],
+    "steps": [
+      "Connect MetaMask and add the Polygon network.",
+      "Bridge USDC or DAI from Ethereum to Polygon.",
+      "Go to app.aave.com and switch to the Polygon market.",
+      "Deposit your stablecoins to earn interest.",
+      "Track interest and health factor in your Aave dashboard."
+    ],
+    "exit_plan": [
+      "Withdraw your assets from Aave.",
+      "Bridge funds back to Ethereum or send to exchange.",
+      "Convert to fiat via Coinbase or Binance if needed."
+    ],
+    "risks": [
+      "Smart contract risk",
+      "Market liquidity risk",
+      "De-pegging of stablecoins"
+    ],
+    "video_url": "https://www.youtube.com/watch?v=example3",
+    "guide_url": "https://example.com/aave-guide.pdf",
+    "audit_url": "https://defisafety.com/app/project/aave",
+    "tags": [
+      "lending",
+      "polygon",
+      "low-risk"
+    ],
+    "created_at": "2025-07-18T22:53:27.058941"
+  },
+  {
+    "id": "gmx-real-yield-eth",
+    "name": "Stake ETH for Real Yield on GMX",
+    "slug": "gmx-real-yield-eth",
+    "chain": "Arbitrum",
+    "risk": "Medium",
+    "roi_range": "15\u201330% APY",
+    "platform": "GMX",
+    "network": "Arbitrum",
+    "tools": [
+      "GMX.io",
+      "Arbitrum Bridge",
+      "MetaMask"
+    ],
+    "steps": [
+      "Bridge ETH to Arbitrum using Arbitrum Bridge.",
+      "Go to gmx.io and click on 'Earn'.",
+      "Stake ETH or GMX tokens in the protocol.",
+      "Start earning yield from real trading fees.",
+      "Claim rewards regularly and track APR on site."
+    ],
+    "exit_plan": [
+      "Unstake from GMX.",
+      "Bridge ETH back to Ethereum or to a CEX.",
+      "Sell ETH or GMX and withdraw fiat if needed."
+    ],
+    "risks": [
+      "Volatility of GMX token",
+      "Protocol fee variability",
+      "Smart contract risk"
+    ],
+    "video_url": "https://www.youtube.com/watch?v=example4",
+    "guide_url": "https://example.com/gmx-guide.pdf",
+    "audit_url": "https://defisafety.com/app/project/gmx",
+    "tags": [
+      "yield",
+      "arbitrum",
+      "medium-risk"
+    ],
+    "created_at": "2025-07-18T22:53:27.058955"
+  },
+  {
+    "id": "pendle-future-yield",
+    "name": "Pendle Future Yield Farming",
+    "slug": "pendle-future-yield",
+    "chain": "Ethereum",
+    "risk": "High",
+    "roi_range": "30\u2013120% APY",
+    "platform": "Pendle",
+    "network": "Ethereum",
+    "tools": [
+      "Pendle",
+      "MetaMask",
+      "DeBank"
+    ],
+    "steps": [
+      "Connect MetaMask and ensure you are on Ethereum.",
+      "Go to app.pendle.finance and choose a yield-bearing token.",
+      "Split your token into YT (Yield Token) and PT (Principal Token).",
+      "Stake YT in Pendle pools for boosted yield.",
+      "Track performance and expiry dates carefully."
+    ],
+    "exit_plan": [
+      "Unstake YT from Pendle.",
+      "Redeem PT + YT at or before expiry.",
+      "Convert assets back to stablecoin or ETH."
+    ],
+    "risks": [
+      "Complex mechanism",
+      "Volatility in yield",
+      "Gas fees on Ethereum"
+    ],
+    "video_url": "https://www.youtube.com/watch?v=example5",
+    "guide_url": "https://example.com/pendle-guide.pdf",
+    "audit_url": "https://defisafety.com/app/project/pendle",
+    "tags": [
+      "farming",
+      "advanced",
+      "high-risk"
+    ],
+    "created_at": "2025-07-18T22:53:27.058959"
+  },
+  {
+    "id": "lido-eth-staking",
+    "name": "Single-Sided ETH Staking via Lido",
+    "slug": "lido-eth-staking",
+    "chain": "Ethereum",
+    "risk": "Low",
+    "roi_range": "3\u20135% APY",
+    "platform": "Lido",
+    "network": "Ethereum",
+    "tools": [
+      "Lido",
+      "MetaMask",
+      "stETH"
+    ],
+    "steps": [
+      "Buy ETH and connect MetaMask to Lido.",
+      "Go to stake.lido.fi and deposit ETH.",
+      "Receive stETH (staked ETH) in your wallet.",
+      "Track staking APR on the Lido dashboard.",
+      "Optionally use stETH in DeFi protocols."
+    ],
+    "exit_plan": [
+      "Hold stETH until ETH withdrawal is available.",
+      "Swap stETH for ETH on a DEX if needed earlier.",
+      "Withdraw to CEX and convert to fiat."
+    ],
+    "risks": [
+      "Smart contract risk",
+      "Liquidity risk for stETH",
+      "Slippage when exiting"
+    ],
+    "video_url": "https://www.youtube.com/watch?v=example6",
+    "guide_url": "https://example.com/lido-guide.pdf",
+    "audit_url": "https://defisafety.com/app/project/lido",
+    "tags": [
+      "staking",
+      "eth",
+      "low-risk"
+    ],
+    "created_at": "2025-07-18T22:53:27.058962"
+  },
+  {
+    "id": "reaper-ftm-vaults",
+    "name": "Fantom Reaper Auto-Compounding Vaults",
+    "slug": "reaper-ftm-vaults",
+    "chain": "Fantom",
+    "risk": "Medium",
+    "roi_range": "20\u201370% APY",
+    "platform": "Reaper Farm",
+    "network": "Fantom",
+    "tools": [
+      "Reaper.Farm",
+      "MetaMask",
+      "SpookySwap"
+    ],
+    "steps": [
+      "Add Fantom network to MetaMask.",
+      "Buy FTM and swap into LP tokens on SpookySwap.",
+      "Visit reaper.farm and find a matching vault.",
+      "Deposit LP tokens and enable auto-compound.",
+      "Track performance on the vault dashboard."
+    ],
+    "exit_plan": [
+      "Withdraw funds from Reaper.",
+      "Unzap LP into single tokens.",
+      "Send back to CEX or bridge to Ethereum."
+    ],
+    "risks": [
+      "Platform and token volatility",
+      "Impermanent loss",
+      "Smart contract bugs"
+    ],
+    "video_url": "https://www.youtube.com/watch?v=example7",
+    "guide_url": "https://example.com/reaper-guide.pdf",
+    "audit_url": "https://defisafety.com/app/project/reaper",
+    "tags": [
+      "fantom",
+      "vaults",
+      "medium-risk"
+    ],
+    "created_at": "2025-07-18T22:53:27.058967"
+  }
+]

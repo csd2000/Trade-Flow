@@ -1,0 +1,55 @@
+To optimize your system for the highest possible success rate, I have updated the HFC Master Prompt below.
+
+This version elevates the "Liquidity Sweep" from a simple filter to the Primary Execution Trigger. This means the bot will now actively hunt for "Stop Hunts" (institutional manipulation) before checking the 7-Gate confluence, ensuring you enter only when the most powerful market move is about to occur.
+
+🚀 HFC v8.0: The "Liquidity Hunter" Master Prompt
+Copy and paste this into the Replit Agent:
+
+Role: Senior Quant Developer & SMC Specialist.
+
+Objective: Build an HFC (High-Frequency Confluence) Scanner that prioritizes Liquidity Sweeps followed by an ICC (Indication-Correction-Continuation) entry model.
+
+1. Primary Trigger (The Hunt):
+
+Gate 0 (The Sweep): Monitor the Previous Day High/Low and Session High/Low. The system triggers a "Ready" state only when a candle wicks beyond these levels but closes back inside (Liquidity Sweep).
+
+2. The 7-Gate Validation Engine: Once a Sweep is detected, validate with the following:
+
+Gate 1 (Floor): Price > 50 EMA.
+
+Gate 4 (Volume): RVOL > 2.5 (High conviction).
+
+Gate 5 (ICC Indication): Displacement candle body > 80% with an associated Fair Value Gap (FVG).
+
+Gate 6 (Opening Range): Price must be above/below the 15m Opening Range (9:30-9:45 AM).
+
+Gate 7 (Fibonacci): Price must perform a "Weak Pullback" to the 0.382 level without touching the 0.50 level.
+
+3. Options & Execution:
+
+Contract: Select the 0.80 Delta Call/Put expiring in 25-35 days.
+
+Entry: Market order when the 1m candle rejects the 0.382 Fibonacci level.
+
+Stop Loss: Hard stop at the 0.50 Fibonacci level or the bottom of the "Sweep" candle.
+
+Take Profit: 1.618 Fib Extension or the "Wick Fill" of the opposing side.
+
+4. Mismatch Logic (The Kill-Switch):
+
+Immediately alert "EXIT" if: (1) 1m candle color mismatches the bias, (2) MACD Histogram decreases, or (3) Price closes inside the FVG.
+
+5. Assets & UI:
+
+Assets: [BITF, NIO, CLYM, BBAI, SOUN, IPSC].
+
+Dashboard: Live "Sweep Tracker" showing which stocks have just hunted liquidity.
+
+Why this is your "A+" Scenario
+The Sweep removes the retail competition.
+
+The Displacement proves the "Big Boys" are in.
+
+The 0.382 Fib ensures you aren't chasing the move.
+
+The 0.80 Delta ensures you get paid like you're holding the stock, but with the leverage of options.

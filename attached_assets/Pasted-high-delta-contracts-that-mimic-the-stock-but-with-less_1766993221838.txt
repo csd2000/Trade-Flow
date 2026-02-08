@@ -1,0 +1,13 @@
+high-delta contracts that mimic the stock but with less capital.The Scanner Rule: Filter for Delta of 0.80 to 0.90.Why: A $0.80$ Delta means for every $1.00 the stock moves, your option moves $0.80. More importantly, it gives you a theoretical ~80% chance of being in-the-money at expiry.Strike Selection: Pick a strike price at least 2–3 levels below the current stock price (In-The-Money).Example: If the stock is $4.50, don't buy the $5.00 call. Buy the **$3.00 or $3.50 call**.2. The "Must-Have" Filters for <$5 StocksLow-priced stocks are prone to manipulation and "dead" options chains. Your Replit scanner must include these three hard filters:The 10% Spread Rule: The difference between the Bid and Ask must be less than 10% of the total price. If the Bid is $0.50 and the Ask is $0.70, DO NOT TRADE. You are down 40% immediately.Open Interest > 500: Never trade a strike with zero open interest. You will not be able to exit when you hit your 25% profit target.Volume/OI Ratio: Look for strikes where today's volume is at least 10% of the total Open Interest. This shows "active money" is moving the contract.3. Execution Logic (The "Base Hit" Strategy)VariableRule for High ProbabilityExpiration (DTE)45–60 Days. Avoid "Weeklies." Penny stocks need time to breathe.Entry TriggerPrice must be above the 9-day EMA and VWAP.Profit TargetSet a Limit Order for 30% gain immediately after buying.Stop LossHard stop at 25%. If it breaks the 20-day SMA, exit manually.4. Replit Code Logic SnippetAdd this specific filtering logic to your options_scanner.py:Pythondef is_high_prob_penny_setup(option_data):
+    # Rule 1: Tight Spreads (The Liquidity Filter)
+    spread = (option_data['ask'] - option_data['bid']) / option_data['ask']
+    if spread > 0.10: return False
+    
+    # Rule 2: Deep ITM (The Probability Filter)
+    if not (0.75 <= option_data['delta'] <= 0.90): return False
+    
+    # Rule 3: Minimum Interest
+    if option_data['open_interest'] < 500: return False
+    
+    return True
+Summary of the "Best" Setup:Buy the 0.80 Delta Call, 45 Days out, on a stock with a Bid-Ask spread under $0.05. This setup is the most consistent way to grow a small account without gambling on "out-of-the-money" junk that usually expires worthless.

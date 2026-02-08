@@ -1,0 +1,23 @@
+Improved Master Prompt: SEC Risk Integration
+​Objective: Enhance the existing scanning logic by integrating an SEC-based risk filter (get_sec_flags) as a final confirmation step for Liquidity Sweep signals within the 7-Gate system.
+​1. New Logic: get_sec_flags(symbol)
+​Create a background function that performs the following:
+​Source: Query the SEC EDGAR API for the most recent 10-K or 10-Q filing.
+​Search Parameters: Scan the "Risk Factors" or "Legal Proceedings" sections for keywords: lawsuit, audit, impairment, litigation, or going concern.
+​Logic: * If \ge 2 keywords are found: Return alert.
+​Otherwise: Return clear.
+​2. Integration Point (The "Surgical" Add)
+​Do not modify the existing UI structure or core 7-Gate scanning sequence. Instead, append this logic immediately after a Liquidity Sweep is detected:
+​Variable: risks = get_sec_flags(symbol)
+​Trigger: Only run this after the primary "7-Gate" logic finishes to conserve API calls.
+​3. UI & Logging Output
+​Keep the footprint minimal to avoid "feature creep":
+​UI Display: In the existing Buy/Sell signal output, append a small text tag: [Risk: ALERT] in red or [Risk: CLEAR] in green.
+​Data Logging: If the app utilizes a logs/ folder or database, include the risk_score (count of keywords found) in the JSON/CSV output for that ticker.
+​4. Implementation Strategy
+​Preservation: Do not overwrite existing scanners or UI components.
+​Test Case: Run the full sequence on a single ticker (e.g., $TSLA or $AAPL) to verify the SEC ping works before applying it to the global scanner.
+​Why this version works better:
+​Technical Specificity: It defines exactly which SEC filings (10-K/10-Q) to hunt for, preventing the AI from getting lost in general web searches.
+​Contextual Alignment: It anchors the risk check to your Liquidity Sweep priority, ensuring you aren't alerted to "risky" stocks that weren't already hitting your primary trade setup.
+​Safety: The "Run tests on one ticker first" instruction prevents the AI from refactoring your entire codebase in one go.

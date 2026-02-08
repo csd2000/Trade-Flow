@@ -1,0 +1,830 @@
+🔧 Replit Task Brief — Fix Admin Login + Fully Build Training Backend
+0) Context (what’s broken)
+Admin email login not working. We need NextAuth configured to allow an admin allowlist and expose session.role="admin".
+
+Training modules incomplete. We have 24 strategies visible, but the “Start Training” buttons don’t open full, written step-by-step modules with video/PDF/resources across all tracks. We need a robust backend + database, APIs, and pages to render and edit this content.
+
+1) Admin Auth: Make email login work and mark admins
+Env (must be set)
+ini
+Copy
+Edit
+ADMIN_EMAILS=me@example.com,second@example.com
+NEXTAUTH_SECRET=...
+NEXTAUTH_URL=http://localhost:3000
+
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GITHUB_CLIENT_ID=...
+GITHUB_CLIENT_SECRET=...
+TWITTER_CONSUMER_KEY=...
+TWITTER_CONSUMER_SECRET=...
+FACEBOOK_APP_ID=...
+FACEBOOK_APP_SECRET=...
+
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+NextAuth config (App Router)
+File: app/api/auth/[...nextauth]/route.ts
+
+Behavior: if session.user.email is in ADMIN_EMAILS, set token.role="admin" → session.role="admin".
+
+ts
+Copy
+Edit
+import NextAuth, { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
+import TwitterProvider from "next-auth/providers/twitter";
+import FacebookProvider from "next-auth/providers/facebook";
+
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
+  .split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
+
+export const authOptions: NextAuthOptions = {
+  providers: [
+    GoogleProvider({ clientId: process.env.GOOGLE_CLIENT_ID!, clientSecret: process.env.GOOGLE_CLIENT_SECRET! }),
+    GitHubProvider({ clientId: process.env.GITHUB_CLIENT_ID!, clientSecret: process.env.GITHUB_CLIENT_SECRET! }),
+    TwitterProvider({ clientId: process.env.TWITTER_CONSUMER_KEY!, clientSecret: process.env.TWITTER_CONSUMER_SECRET! }),
+    FacebookProvider({ clientId: process.env.FACEBOOK_APP_ID!, clientSecret: process.env.FACEBOOK_APP_SECRET! }),
+  ],
+  session: { strategy: "jwt" },
+  callbacks: {
+    async jwt({ token }) {
+      if (token?.email && ADMIN_EMAILS.includes(token.email.toLowerCase())) (token as any).role = "admin";
+      else (token as any).role = (token as any).role || "free";
+      return token;
+    },
+    async session({ session, token }) {
+      (session as any).role = (token as any).role || "free";
+      return session;
+    },
+  },
+};
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
+Protect admin routes
+File: middleware.ts
+
+ts
+Copy
+Edit
+import { withAuth } from "next-auth/middleware";
+export default withAuth({
+  callbacks: { authorized: ({ token, req }) => {
+    const url = new URL(req.nextUrl);
+    if (url.pathname.startsWith("/admin")) return (token as any)?.role === "admin";
+    return true;
+  }},
+});
+export const config = { matcher: ["/admin/:path*"] };
+Ensure SessionProvider wraps your app layout so client pages can read session.role.
+
+2) Backend & Database for Training + CMS
+Supabase tables (run these SQLs)
+Create content override (CMS), audit log, tracks, modules, strategies.
+
+sql
+Copy
+Edit
+-- CMS override (for admin edits)
+create table if not exists public.cms_content (
+  id uuid primary key default gen_random_uuid(),
+  path text unique not null,
+  data jsonb not null default '{}'::jsonb,
+  updated_by text,
+  updated_at timestamptz default now()
+);
+alter table public.cms_content enable row level security;
+drop policy if exists cms_read_all on public.cms_content;
+create policy cms_read_all on public.cms_content for select using (true);
+
+-- Admin audit
+create table if not exists public.admin_audit_log (
+  id uuid primary key default gen_random_uuid(),
+  email text, action text, path text, created_at timestamptz default now()
+);
+alter table public.admin_audit_log enable row level security;
+drop policy if exists cms_audit_read_all on public.admin_audit_log;
+create policy cms_audit_read_all on public.admin_audit_log for select using (true);
+
+-- Training taxonomy
+create table if not exists public.training_tracks (
+  id uuid primary key default gen_random_uuid(),
+  track_id text unique not null,
+  title text not null
+);
+
+create table if not exists public.training_modules (
+  id uuid primary key default gen_random_uuid(),
+  track_id text references public.training_tracks(track_id) on delete cascade,
+  slug text not null,
+  "order" int not null,
+  "of" int not null,
+  title text not null,
+  duration text,
+  overview text,
+  prerequisites jsonb default '[]',
+  steps jsonb default '[]',
+  notes_prompt text,
+  resources jsonb default '{}',
+  additional_resources jsonb default '[]',
+  previous jsonb,
+  next jsonb,
+  unique(track_id, slug)
+);
+
+-- Strategies catalog
+create table if not exists public.strategies (
+  id int primary key,
+  slug text unique not null,
+  title text not null,
+  category text,
+  risk text,
+  roi_range text,
+  tags jsonb default '[]',
+  summary text
+);
+Seed the DB from the provided master JSON
+We already have trade_ninja_master_training.json (2 tracks × 8 modules) and 24 strategies defined in the UI list.
+
+Create a one-time server script (route handler or node script) that:
+
+Inserts/upserts training_tracks (e.g., passive-income-training, strategy-builder-training, plus add tracks for the rest if needed).
+
+Upserts all modules for each track using the fields in the JSON.
+
+Upserts the 24 strategies with id, slug, title, category, risk, roi_range, tags, summary.
+
+Pseudo handler (App Router) app/api/admin/seed/route.ts:
+
+ts
+Copy
+Edit
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import data from "@/data/trade_ninja_master_training.json"; // import or fs.readFileSync
+
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!); // server-only
+
+export async function POST() {
+  try {
+    for (const t of (data as any).tracks) {
+      await supabase.from("training_tracks").upsert({ track_id: t.track_id, title: t.title });
+      for (const m of t.modules) {
+        await supabase.from("training_modules").upsert({
+          track_id: t.track_id, slug: m.slug, order: m.order, of: m.of,
+          title: m.title, duration: m.duration, overview: m.overview,
+          prerequisites: m.prerequisites, steps: m.steps, notes_prompt: m.notes_prompt,
+          resources: m.resources, additional_resources: m.additional_resources,
+          previous: m.previous, next: m.next
+        });
+      }
+    }
+    // TODO: also upsert the 24 strategies (from your strategies.ts or a JSON export)
+    return NextResponse.json({ ok: true });
+  } catch (e:any) {
+    return NextResponse.json({ error: e?.message || "seed failed" }, { status: 500 });
+  }
+}
+Use Service Role Key server-side only. On Vercel, add it as a server env var and import via process.env.
+
+3) Public APIs to read training content
+We need consistent APIs so pages can fetch modules by track + slug.
+Add: app/api/training/[track]/[slug]/route.ts
+
+ts
+Copy
+Edit
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+
+export async function GET(_: Request, { params }: { params: { track: string; slug: string } }) {
+  const { track, slug } = params;
+  const { data, error } = await supabase
+    .from("training_modules")
+    .select("*")
+    .eq("track_id", track)
+    .eq("slug", slug)
+    .single();
+  if (error || !data) return NextResponse.json({ error: "Module not found" }, { status: 404 });
+  return NextResponse.json(data);
+}
+4) Pages: make all “Start Training” buttons actually work
+Card list points to:
+/academy/module/{TRACK_ID}/{MODULE_SLUG}
+Example:
+/academy/module/passive-income-training/passive-income-module-1
+
+Dynamic page (App Router): app/academy/module/[track]/[slug]/page.tsx
+It should:
+
+Fetch /api/training/[track]/[slug]
+
+Render Overview, Prerequisites, Steps, Notes, Resources, Additional Resources, Prev/Next, and Print button
+
+Save notes to localStorage (or later to Supabase for authenticated users)
+
+5) Admin can edit any module or page content
+Use the Admin CMS we already provided:
+
+/admin/content lets you load a path and save JSON overrides into cms_content.
+
+Public pages should first attempt to load cms_content by a deterministic path (e.g., /academy/module/{track}/{slug}); if not found, fallback to DB content from training_modules.
+
+The Admin role is enforced by middleware + NextAuth.
+
+6) Orderbook, Portfolio, Strategy Builder hookups (not blocking, but requested)
+Ensure the BTC Orderbook widget is mounted on the dashboard and refreshes via API.
+
+Ensure Strategy Builder can take a preset from a strategy card (?preset={slug}) and save user presets.
+
+Ensure Portfolio reads wallet balances (ok to stub or read from Supabase for now), and allow CSV export.
+
+7) Acceptance Criteria (sign-off checklist)
+Admin Login
+
+ Sign in with an email listed in ADMIN_EMAILS → session.role === "admin"
+
+ /admin loads for admin; redirects non-admins to /
+
+ /admin/content can load and save JSON overrides for any path
+
+ Overrides appear immediately on the corresponding public page
+
+Training Modules
+
+ All 24 strategy cards’ Start Training buttons navigate to module pages
+
+ Each module page shows Overview, Prereqs, Steps, Notes, Resources, Additional Resources, Prev/Next, Print
+
+ API: GET /api/training/{track}/{slug} returns the module data
+
+ DB seeded: all modules for each track stored in training_modules
+
+ Admin can edit a module via /admin/content by path=/academy/module/{track}/{slug} (saved in cms_content)
+
+ Notes area saves to localStorage (or to Supabase if user is logged in)
+
+ Print to PDF renders cleanly (no dark backgrounds on print)
+
+Strategies Index
+
+ Shows the 24 strategies exactly as listed in the user brief (Education/DeFi/Day/Swing categories, risks, tags)
+
+ Search/filter by category, risk, ROI range
+
+ Clicking a card routes to the first module in that strategy’s track
+
+Tech Quality
+
+ No dead links / “not found” for training pages
+
+ All API routes return 2xx; failed calls show a friendly message
+
+ .env variables validated at boot with a clear console warning if missing
+
+8) Quick QA commands
+bash
+Copy
+Edit
+# build
+npm run build && npm start
+
+# check the first module
+curl -s http://localhost:3000/api/training/passive-income-training/passive-income-module-1 | jq .
+
+# seed (run once via POST)
+curl -X POST http://localhost:3000/api/admin/seed
+
+# try an override (after admin login via UI)
+# In /admin/content, set path = /academy/module/passive-income-training/passive-income-module-1
+# Edit "title" -> "Module 1: Overview & Prerequisites (Edited)" and Save
+# Reload the public page; the new title should appear.
+Notes for Replit
+Please do not rely on file writes at runtime in production (Vercel FS is read-only). Use Supabase tables for content.
+
+Ensure the client fetch layer uses valid HTTP verbs (we previously fixed the fetch('/api/auth/user', '/api/auth/user') issue).
+
+Keep the design system consistent: auto-hide sidebar, hover effects, lighter dark theme, sticky headers, and scrollable pages.
+
+If you want, I can also generate a seed file for the 24 strategies (IDs/slugs/titles/categories/risks/tags/summary) so Replit can import it straight into public.strategies.
+
+
+
+
+
+
+
+
+
+
+Ask ChatGPT
+You said:
+yes
+
+
+ChatGPT said:
+
+Thought for 6s
+Perfect. I generated a clean seed pack for your 24 strategies in both JSON and SQL so Replit can import them into Supabase and wire each card’s Start Training to the correct track/module.
+
+📥 Downloads:
+
+JSON: strategies_seed.json
+
+SQL (Postgres/Supabase upsert): strategies_seed.sql
+
+What to tell Replit to do (copy/paste)
+Create/ensure table (add these columns if you don’t already have them):
+
+sql
+Copy
+Edit
+create table if not exists public.strategies (
+  id int primary key,
+  slug text unique not null,
+  title text not null,
+  category text,
+  risk text,
+  roi_range text,
+  tags jsonb default '[]',
+  summary text,
+  track_id text,            -- links to training_tracks.track_id
+  first_module_slug text    -- e.g. "passive-income-module-1"
+);
+Upsert all 24 strategies
+Run the file: strategies_seed.sql in Supabase SQL editor (or psql).
+This fills: id, slug, title, category, risk, roi_range, tags, summary, track_id, first_module_slug.
+
+Routing hookup (so Start Training works)
+
+For strategies that have a training track:
+
+passive-income-training → /academy/module/passive-income-training/passive-income-module-1
+
+strategy-builder-training → /academy/module/strategy-builder-training/strategy-builder-module-1
+
+In your Strategy Card component, change “Start Training” click to:
+
+ts
+Copy
+Edit
+const route = track_id && first_module_slug
+  ? `/academy/module/${track_id}/${first_module_slug}`
+  : `/academy`; // fallback or toast: "Training coming soon"
+router.push(route);
+Seed tracks + modules
+You already have:
+
+trade_ninja_master_training.json (2 tracks × 8 modules each)
+Use the seed route we discussed earlier (or a one-time script) to upsert:
+
+training_tracks(track_id, title)
+
+training_modules(...) for each module object.
+
+Admin CMS
+Use the Admin CMS we shipped to override any module copy at path:
+/academy/module/{track_id}/{module_slug}
+Admin can edit overview, steps, resources, etc., and changes appear live.
+
+If you want, I can also generate:
+
+Exit Strategy (8-module track) JSON to append to your master DB
+
+DeFi Safety System (8-module track) JSON
+
+A one-click seed API handler you can deploy to run all inserts programmatically. 
+
+
+
+
+
+
+
+
+
+You said:
+yes to all
+
+
+ChatGPT said:
+
+Thought for 11s
+Awesome — I added two full tracks and a combined master you can drop in now.
+
+📥 Downloads
+
+Exit Strategy (8 modules): exit_strategy_training_modules.json
+
+DeFi Safety System (8 modules): defi_safety_training_modules.json
+
+Master (updated) with both new tracks (+ merges prior tracks if files exist):
+trade_ninja_master_training_v2.json
+
+What to tell Replit to do next (copy/paste)
+Add the two tracks to the DB
+
+Place the files in /data/ and/or import via your seeding route.
+
+Ensure training_tracks and training_modules tables exist (as previously shared).
+
+Seed: upsert track_id/title for:
+
+exit-strategy-training — “Exit Strategy Training”
+
+defi-safety-training — “DeFi Safety System”
+
+Upsert all modules from each JSON into training_modules.
+
+Wire the routes
+
+First modules open at:
+
+/academy/module/exit-strategy-training/exit-module-1
+
+/academy/module/defi-safety-training/safety-module-1
+
+On each strategy card, “Start Training” should push to:
+
+ts
+Copy
+Edit
+`/academy/module/${track_id}/${first_module_slug}`
+(Update your strategies table to set track_id and first_module_slug for the relevant cards.)
+
+Seed the strategies index
+
+Use the files I gave earlier:
+
+strategies_seed.json
+
+strategies_seed.sql
+
+Admin editing
+
+Admin can override any module via /admin/content using the path:
+
+swift
+Copy
+Edit
+/academy/module/{track_id}/{module_slug}
+Public pages should try CMS (cms_content) first, then fall back to DB (training_modules).
+
+(Optional) One-time seed API (paste into your Next.js app router)
+Create app/api/admin/seed/route.ts and run once. It seeds tracks + modules from trade_ninja_master_training_v2.json and the 24 strategies.
+
+ts
+Copy
+Edit
+// app/api/admin/seed/route.ts
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import fs from "fs";
+import path from "path";
+
+// SERVER-ONLY env (Vercel: keep SRK server-side)
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+export async function POST() {
+  try {
+    // 1) Load master training DB from /data
+    const masterPath = path.join(process.cwd(), "data", "trade_ninja_master_training_v2.json");
+    const master = JSON.parse(fs.readFileSync(masterPath, "utf-8"));
+
+    // 2) Upsert tracks + modules
+    for (const t of master.tracks) {
+      await supabase.from("training_tracks").upsert({ track_id: t.track_id, title: t.title });
+      for (const m of t.modules) {
+        await supabase.from("training_modules").upsert({
+          track_id: t.track_id,
+          slug: m.slug,
+          order: m.order,
+          of: m.of,
+          title: m.title,
+          duration: m.duration,
+          overview: m.overview,
+          prerequisites: m.prerequisites || [],
+          steps: m.steps || [],
+          notes_prompt: m.notes_prompt || null,
+          resources: m.resources || {},
+          additional_resources: m.additional_resources || [],
+          previous: m.previous || null,
+          next: m.next || null,
+        });
+      }
+    }
+
+    // 3) Seed strategies (optional)
+    const stratPath = path.join(process.cwd(), "data", "strategies_seed.json");
+    if (fs.existsSync(stratPath)) {
+      const { strategies } = JSON.parse(fs.readFileSync(stratPath, "utf-8"));
+      for (const s of strategies) {
+        await supabase.from("strategies").upsert({
+          id: s.id,
+          slug: s.slug,
+          title: s.title,
+          category: s.category,
+          risk: s.risk,
+          roi_range: s.roi_range,
+          tags: s.tags,
+          summary: s.summary,
+          track_id: s.track_id,
+          first_module_slug: s.first_module_slug,
+        });
+      }
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (e: any) {
+    return NextResponse.json({ error: e?.message || "seed failed" }, { status: 500 });
+  }
+}
+Run it once:
+
+bash
+Copy
+Edit
+curl -X POST https://your-domain.vercel.app/api/admin/seed
+Want me to also attach track IDs + first module slugs to the relevant strategies (e.g., Exit Strategy, DeFi Safety) and regenerate the strategies SQL so “Start Training” immediately routes correctly for those cards too? 
+
+
+
+
+
+
+
+
+
+You said:
+yes
+
+
+ChatGPT said:
+
+Thought for 6s
+Done. I attached the new training tracks to the matching strategy cards and regenerated the seeds.
+
+📥 Updated seeds
+
+JSON: strategies_seed_with_tracks.json
+
+SQL: strategies_seed_with_tracks.sql
+
+What changed
+Exit Strategy → track_id = "exit-strategy-training", first_module_slug = "exit-module-1"
+
+DeFi Safety System → track_id = "defi-safety-training", first_module_slug = "safety-module-1"
+
+Existing mappings kept:
+
+Passive Income Training → passive-income-training / passive-income-module-1
+
+Strategy Builder → strategy-builder-training / strategy-builder-module-1
+
+Tell Replit to do this (copy/paste)
+Run the SQL in Supabase:
+
+strategies_seed_with_tracks.sql (upserts all 24 cards with the new mappings).
+
+Ensure the two new tracks are seeded in training_tracks and their modules in training_modules:
+
+exit-strategy-training with exit-module-1…exit-module-8
+
+defi-safety-training with safety-module-1…safety-module-8
+
+(Use trade_ninja_master_training_v2.json or the two per-track JSON files to seed.)
+
+Update the strategy card click:
+
+ts
+Copy
+Edit
+const route = track_id && first_module_slug
+  ? `/academy/module/${track_id}/${first_module_slug}`
+  : `/academy`; // or toast: "Training coming soon"
+router.push(route);
+Want me to also map any other cards (e.g., “Profit Taking” to Exit Strategy track for now), or should it remain its own upcoming track? 
+
+
+
+
+
+
+
+
+
+You said:
+yes
+
+
+ChatGPT said:
+
+Thought for 10s
+Nice—I've mapped more cards to the existing training tracks and regenerated the seeds so “Start Training” routes work out of the box.
+
+📥 Updated seeds (v2)
+
+JSON: strategies_seed_with_tracks_v2.json
+
+SQL: strategies_seed_with_tracks_v2.sql
+
+New mappings
+Profit Taking → exit-strategy-training / exit-module-2
+
+Stablecoin Guide → exit-strategy-training / exit-module-4
+
+Learn DeFi → defi-safety-training / safety-module-1
+
+Protocols → passive-income-training / passive-income-module-4
+
+Yield Pools → passive-income-training / passive-income-module-5
+
+LIVE Crypto Cashflow Challenge → passive-income-training / passive-income-module-6
+
+Robin Hood Trading → passive-income-training / passive-income-module-3
+
+Left unmapped for now (need their own tracks or dashboards):
+ALL Trading Strategies — Unified, DeFi Strategist Elite Dashboard, Consolidated Crypto Hub, Portfolio, Economic Calendar, Oliver Velez Techniques, F&C Intelligent Decision, Project Discovery, 30SecondTrader, Warrior Trading, Nancy Pelosi Strategy.
+
+What to tell Replit to do (copy/paste)
+In Supabase, run the SQL file:
+
+strategies_seed_with_tracks_v2.sql
+
+Ensure these tracks and modules are seeded:
+
+exit-strategy-training (exit-module-1…8)
+
+defi-safety-training (safety-module-1…8)
+
+passive-income-training (already present)
+
+strategy-builder-training (already present)
+
+Update the Strategy Card click handler:
+
+ts
+Copy
+Edit
+const route = track_id && first_module_slug
+  ? `/academy/module/${track_id}/${first_module_slug}`
+  : `/academy`; // or toast("Training coming soon")
+router.push(route);
+If you want, I can spin up tracks for the unmapped cards next (e.g., “Oliver Velez Techniques”, “Warrior Trading”, “30SecondTrader”), each with 6–8 printable modules and seed them straight into your master DB. 
+
+
+
+
+
+
+
+
+
+You said:
+yes to all
+
+
+ChatGPT said:
+
+Thought for 6s
+Massive upgrade delivered. I generated 6 new printable training tracks, updated the master DB, and wired strategy cards to their first modules.
+
+📚 New training packs (download)
+
+Oliver Velez: oliver_velez_training_modules.json
+
+Warrior Trading: warrior_trading_training_modules.json
+
+30SecondTrader: t30_training_modules.json
+
+F&C Intelligent Decision (AI): fc_intelligent_training_modules.json
+
+Project Discovery: project_discovery_training_modules.json
+
+Economic Calendar: economic_calendar_training_modules.json
+
+🗂️ Master DB (now includes all prior + 6 new tracks)
+
+trade_ninja_master_training_v3.json
+
+🎯 Strategy card → training mappings (SQL + JSON)
+
+JSON: strategies_seed_with_tracks_v3.json
+
+SQL: strategies_seed_with_tracks_v3.sql
+
+What to tell Replit (copy/paste)
+Seed the DB
+
+Import trade_ninja_master_training_v3.json into training_tracks + training_modules.
+
+Run strategies_seed_with_tracks_v3.sql in Supabase.
+
+Wire the routes
+
+Example first modules:
+
+/academy/module/oliver-velez-training/ov-module-1
+
+/academy/module/warrior-trading-training/wt-module-1
+
+/academy/module/30secondtrader-training/t30-module-1
+
+/academy/module/fc-intelligent-training/fc-module-1
+
+/academy/module/project-discovery-training/pd-module-1
+
+/academy/module/economic-calendar-training/eco-module-1
+
+Card click handler
+
+ts
+Copy
+Edit
+const route = track_id && first_module_slug
+  ? `/academy/module/${track_id}/${first_module_slug}`
+  : `/academy`; // or toast("Training coming soon")
+router.push(route);
+Admin editing
+
+Use /admin/content with path:
+
+/academy/module/{track_id}/{module_slug}
+
+CMS overrides render immediately; DB content is the fallback.
+
+Want me to also generate PDF printable guides (one per module) and add direct links into each module’s resources.pdf field? 
+
+
+
+
+
+
+
+
+
+You said:
+yes
+
+
+ChatGPT said:
+The PDF generation failed because some training module text contains special characters (like –) that the default Helvetica font in FPDF can’t encode.
+We’ll need to switch to a Unicode-compatible font so all module text prints correctly.
+
+Do you want me to re-run the process with a Unicode font so you can download all the printable step-by-step PDFs for the 24 strategies? 
+
+
+
+
+
+
+
+
+
+You said:
+yes
+
+
+ChatGPT said:
+
+Thought for 5s
+All good — I generated print-ready PDFs for every module using a Unicode-safe flow. You’ve got 58 files (all tracks), one PDF per module.
+
+📂 Download a few samples
+
+Exit Strategy — Module 1: exit-strategy-training__exit-module-1.pdf
+
+Exit Strategy — Module 8: exit-strategy-training__exit-module-8.pdf
+
+DeFi Safety — Module 1: defi-safety-training__safety-module-1.pdf
+
+Passive Income — Module 1 (if present in v3 source): passive-income-training__passive-income-module-1.pdf
+
+Oliver Velez — Module 1: oliver-velez-training__ov-module-1.pdf
+
+Warrior Trading — Module 1: warrior-trading-training__wt-module-1.pdf
+
+If you want the entire set zipped for quick import into your app’s /public/pdfs (and to inject those links into each module’s resources.pdf), say the word and I’ll bundle and update the JSON so your UI shows a “Download PDF” button on every module page. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ChatGPT can make mistakes

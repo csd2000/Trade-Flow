@@ -1,0 +1,62 @@
+This is the Ultimate 7-Gate Master Prompt, consolidated and refined to include the specific "Best Scenario" parameters for option selection (Expiration, Strike, and Delta) based on our deep dive into high-velocity displacement.
+
+The 7-Gate Replit Master Prompt (Final Version)
+Core Philosophy
+The system is a Momentum-Scalping Engine. It seeks to exploit the "Rubber Band Effect" that occurs after a Liquidity Sweep. By combining institutional displacement with high-delta options, the system aims for high-probability, quick-duration trades that avoid theta decay.
+
+I. Option Selection: The "Best Scenario" Parameters
+To support the 7-Gate logic, the system must filter for these specific contract metrics:
+
+Target Delta: 0.60 to 0.65 (Ensures $1 move in underlying = $0.60+ in premium).
+
+Expiration (DTE): 1–3 Days to Expiration. This captures the "Gamma" explosion during Gate 3 displacement without the extreme risk of 0DTE.
+
+Strike Selection: In-The-Money (ITM). The first strike ITM is preferred to maintain intrinsic value.
+
+Entry Type: Limit Order only (to capture the Gate 5 Retest).
+
+II. The 7-Gate Execution Protocol
+Gate 1: The Trigger (Liquidity Sweep)
+Logic: Detect a "Sweep and Reclaim." Price must pierce a Daily High/Low or Session High/Low and immediately close back inside the range.
+
+Priority: This is the only valid starting point. No sweep = No trade.
+
+Gate 2: Institutional Confluence (S/D Zone)
+Logic: The sweep must occur within or at the edge of a HTF (Higher Time Frame) Supply or Demand zone.
+
+Gate 3: Velocity Displacement (The Engine)
+Logic: Identify a "Signature Move." A candle body > 150% of the 20-period average body size.
+
+Requirement: Must leave behind a Fair Value Gap (FVG). This proves the move is supported by 0.60 Delta-worthy momentum.
+
+Gate 4: Market Structure Shift (MSS)
+Logic: The "Seal of Approval." Price must achieve a full candle body close above/below the pivot high/low that created the sweep.
+
+Gate 5: Return to Fair Value (The Entry)
+Logic: Calculate the 50% Equilibrium of the Gate 3 leg.
+
+Execution: Place a Limit Order at the confluence of the 0.5 Fib and the FVG. If price hits the 0.786 Fib before filling, the setup is invalidated (momentum lost).
+
+Gate 6: Risk/Reward (Exit Strategy)
+Stop Loss: 2 Ticks below the Sweep Low (Long) or High (Short).
+
+Take Profit 1: Opposite Liquidity (the "Unswept" side).
+
+Math: Minimum 2:1 R/R based on underlying price.
+
+Gate 7: The Kill-Switch (Environment)
+Windows: 9:30–11:30 AM EST & 1:30–4:00 PM EST.
+
+News: Auto-disable 10 mins before/after High-Impact news (Red Folders).
+
+Liquidity: Contract Bid-Ask spread must be < 2% of total premium.
+
+III. Technical Constraints (Replit Integration)
+Python
+
+# SYSTEM CONSTANTS
+DELTA_TARGET = 0.60
+MIN_DTE = 1
+MAX_DTE = 3
+VELOCITY_MULTIPLIER = 1.5
+MIN_RR = 2.0

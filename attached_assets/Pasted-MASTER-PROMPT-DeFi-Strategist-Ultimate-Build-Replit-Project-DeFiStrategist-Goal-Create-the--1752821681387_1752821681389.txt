@@ -1,0 +1,274 @@
+MASTER PROMPT: DeFi Strategist Ultimate Build
+🔧 Replit Project: DeFiStrategist
+🎯 Goal: Create the most powerful, beginner-to-pro-level DeFi Trading System that includes:
+
+Daily income strategies
+
+Wallet/portfolio sync
+
+Project discovery
+
+Exit planning
+
+Full DeFi training & safety tools
+
+Trading automation triggers
+
+Pro-level dashboard UI
+
+⚙️ FULL STACK INSTRUCTIONS
+📁 1. Pages to Include (Routes)
+txt
+Copy code
+/pages
+├── dashboard.tsx
+├── protocols.tsx
+├── strategy-builder.tsx
+├── portfolio.tsx
+├── profit-taking.tsx
+├── exit-strategy.tsx
+├── learn-defi.tsx
+├── stablecoin-guide.tsx
+├── robinhood-trading.tsx
+├── passive-income-training.tsx
+├── cashflow-challenge.tsx
+├── defi-safety-system.tsx
+├── education-hub.tsx
+├── project-discovery.tsx
+├── yield-pools.tsx
+├── 30secondtrader.tsx
+└── warrior-trading.tsx
+🧠 2. UI/UX Style
+Look/Feel: Jet-black theme, neon blue/green accent (inspired by Bybit/Delphi)
+
+Font: Inter or Space Grotesk
+
+Charts: TradingView or Recharts
+
+NavBar: Sticky, with icon-only collapse option
+
+Dashboard: Modular panels, real-time stats, draggable widgets
+
+🗂️ 3. Database Collections (Supabase or Firebase)
+ts
+Copy code
+users: {
+  id, email, wallet_address, risk_level, created_at
+}
+strategies: {
+  id, name, platform, chain, apy, roi, risk_level, how_to_steps[], exit_steps[]
+}
+protocols: {
+  id, name, description, tvl, apy, risk, supported_chains[], logo
+}
+portfolio: {
+  id, user_id, token, value, strategy_id, protocol_id, current_yield
+}
+alerts: {
+  id, user_id, alert_type, condition, triggered, is_active
+}
+education: {
+  id, title, category, content_markdown, video_url
+}
+projects: {
+  id, name, type, status, yield_opportunity, launch_date
+}
+🚀 4. FEATURES BY PAGE
+🔹 /dashboard
+Live income stats
+
+Wallet sync & token values
+
+Top strategies this week
+
+Leaderboard (Cashflow Challenge)
+
+Risk profile breakdown chart
+
+🔹 /protocols
+Sortable protocol list (by TVL, APY, chain, risk)
+
+Real-time DeFiLlama API integration
+
+Click: View details → Add to Strategy Builder
+
+🔹 /strategy-builder
+Wizard-style flow:
+
+Pick chain
+
+Choose protocol
+
+Select strategy
+
+View tutorial steps + Yield forecast
+
+Save to portfolio
+
+Toggle: Beginner / Expert View
+
+🔹 /portfolio
+Token balances synced via MetaMask/WalletConnect
+
+Strategy-linked performance
+
+Daily income chart
+
+Auto compound switch (if vault supported)
+
+🔹 /profit-taking
+Recommended % to withdraw
+
+Yield-to-stablecoin tool (USDC, DAI)
+
+Rebalance to BTC/ETH tool
+
+Auto-withdraw scheduling (via bot trigger)
+
+🔹 /exit-strategy
+Exit wizard:
+
+Select target price or date
+
+Choose asset to sell (by %)
+
+Set DCA schedule
+
+Trigger alert when BTC/ETH hits top range
+
+Display: Historical market top signals
+
+🔹 /learn-defi
+Core DeFi education: LPs, Staking, Yield Farming, Impermanent Loss, Bridging
+
+Interactive quizzes
+
+Completion badges
+
+🔹 /stablecoin-guide
+Safety rating of each stablecoin
+
+Best yield opportunities (live)
+
+Strategy examples (e.g., DAI in Curve LP)
+
+🔹 /robinhood-trading
+Compare CeFi vs DeFi
+
+On-ramp guide: fiat ➜ wallet ➜ yield
+
+Links to Robinhood, Coinbase, etc.
+
+🔹 /passive-income-training
+List of passive vaults: Yearn, Beefy, AutoFarm
+
+Auto-compound ROI calculator
+
+Step-by-step vault deposit tutorial
+
+Risk meter
+
+🔹 /cashflow-challenge
+30-day task list
+
+Daily check-in button
+
+Share progress badge (exportable)
+
+Referral link tracker
+
+🔹 /defi-safety-system
+Wallet scan: Show contracts approved + revoke access
+
+Risk rating per protocol
+
+Rug checker integration
+
+Notification: Protocol updates/hacks
+
+🔹 /education-hub
+Searchable library of:
+
+Videos
+
+Courses
+
+PDF guides
+
+AMA replays
+
+Filter by: beginner, intermediate, pro
+
+🔹 /project-discovery
+Upcoming DeFi launches
+
+Alpha signal score
+
+Watchlist add button
+
+Airdrop tracker (wallet-based)
+
+🔹 /yield-pools
+Searchable LP/APR database
+
+Filter: Chain, DEX, Token Pair, APY
+
+One-click LP Zapper (if protocol allows)
+
+🔹 /30secondtrader
+Quick wins under 30 sec
+
+Example: Zap ETH to LP vault and stake
+
+Pre-built automation flows
+
+Instant gas estimator
+
+🔹 /warrior-trading
+Leverage & perps protocols (GMX, dYdX, etc.)
+
+Risk-to-reward planner
+
+“Simulate Trade” module
+
+Kill switch auto-trigger (protects wallet)
+
+🧠 5. SMART TOOLS (Bonus Integrations)
+TradingView chart embed
+
+CoinGecko price feeds
+
+Dune Analytics dashboards
+
+DeFiLlama TVL/Protocol Explorer
+
+MetaMask wallet auto-connect
+
+Telegram/Email bot alerts
+
+🧩 6. TECH STACK RECOMMENDATION
+Frontend: Next.js + TailwindCSS
+
+State Management: Zustand or Redux
+
+Wallet: ethers.js + wagmi + RainbowKit
+
+Backend: Supabase or Firebase
+
+Scheduling: CRON + Node.js
+
+Charting: Recharts + TradingView
+
+✅ ACTION STEPS TO USE THIS PROMPT
+Open Replit project: https://replit.com/@csdinc2000/DeFiStrategist
+
+Add file structure for pages above
+
+Set up Supabase backend with tables listed
+
+Build UI using Tailwind + React components (I can generate these)
+
+Integrate WalletConnect & real-time portfolio sync
+
+Deploy on custom domain: defistrategist.ai
+

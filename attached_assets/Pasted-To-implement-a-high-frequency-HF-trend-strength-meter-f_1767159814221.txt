@@ -1,0 +1,80 @@
+To implement a high-frequency (HF) trend strength meter for all assets, your backend needs to compute Relative Momentum and Trend Energy in a loop, while your frontend displays this through a dynamic bar meter.
+
+1. The Multi-Asset Trend Engine (Python)
+This script calculates the Trend Strength Score (0-100) for your entire watchlist. It uses the ADX to measure trend intensity and the EMA Slope to determine direction and velocity.
+
+Python
+
+import pandas as pd
+import pandas_ta as ta
+import yfinance as yf
+
+# Expand this list to include all assets in your app
+watchlist = ["XAUUSD=X", "XAGUSD=X", "EURUSD=X", "BTC-USD", "ETH-USD"]
+
+def get_trend_meter_data(assets):
+    payload = []
+    for ticker in assets:
+        # Fetch 1-minute data for scalping precision
+        df = yf.download(ticker, interval="1m", period="1d", progress=False)
+        
+        # 1. Trend Energy (ADX)
+        adx_df = ta.adx(df['High'], df['Low'], df['Close'], length=14)
+        current_adx = adx_df['ADX_14'].iloc[-1]
+        
+        # 2. Trend Velocity (EMA Slope)
+        df['EMA9'] = ta.ema(df['Close'], length=9)
+        # Calculate angle of the 9 EMA over last 3 bars
+        slope = (df['EMA9'].iloc[-1] - df['EMA9'].iloc[-3]) / 3
+        
+        # 3. Strength Scoring (0-100)
+        # ADX > 25 is trending; we normalize 0-50 ADX to a 0-100 scale
+        strength_score = min(int(current_adx * 2), 100)
+        
+        # 4. Color Logic
+        is_bullish = slope > 0
+        
+        payload.append({
+            "ticker": ticker,
+            "score": strength_score,
+            "is_bullish": is_bullish,
+            "slope": round(slope, 6)
+        })
+    return payload
+
+# Output example: [{'ticker': 'XAUUSD=X', 'score': 64, 'is_bullish': True, ...}]
+2. The Master UI Prompt (Multi-Asset Grid)
+Use this prompt to tell your AI how to format these scores into the Red/Green Bar Meters and Flashing Signals for every asset window in your app.
+
+Markdown
+
+# ROLE: Multi-Asset UI Orchestrator
+# GOAL: Render individual trend meters for each asset window.
+
+## 1. BAR METER CONVERSION
+For each asset in the data array:
+- Take the `score` (0-100) and divide by 10 to get the number of active segments.
+- IF `is_bullish` is TRUE: Use 🟩 (Green) for active segments.
+- IF `is_bullish` is FALSE: Use 🟥 (Red) for active segments.
+- Empty segments use ⬜.
+
+## 2. REAL-TIME SIGNAL OVERRIDE
+- IF `score` > 80 AND `slope` is accelerating: 
+    - [TRIGGER_ACTION]: FLASH_WINDOW border (2Hz pulse).
+    - [LABEL]: "HIGH MOMENTUM"
+- IF `score` < 25:
+    - [STATUS]: "CONSOLIDATION" (Grey out Buy/Sell buttons).
+
+## 3. ASSET COCKPIT OUTPUT
+Example for XAU/USD:
+[XAU/USD] - Strength: 85%
+METER: [🟩🟩🟩🟩🟩🟩🟩🟩⬜⬜]
+SIGNAL: FLASHING BUY
+Best Trading Setup for "All Assets"
+To make this work across Gold, Silver, Forex, and Crypto simultaneously, your AI should follow these Scalping Guardrails:
+
+The "Power" Filter: Only trade assets where the Trend Meter shows 6 bars or more. Anything less is "chop" and will eat your profits in fees.
+
+The "Correlation" Check: In your app, group assets. If Gold (XAU) is 90% Green but Silver (XAG) is only 40% Green, your AI should flag Silver as a "Catch-up Trade" (High Probability Buy).
+
+The "Flash" Rule: A "Flashing Signal" should only trigger when the Trend Meter is expanding (increasing score) and the 9/20 EMA Crossover just occurred on the 1-minute chart.

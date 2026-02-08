@@ -1,0 +1,616 @@
+{
+  "tracks": [
+    {
+      "track_id": "passive-income-training",
+      "title": "Passive Income Training",
+      "modules": [
+        {
+          "slug": "passive-income-module-1",
+          "track": "passive-income-training",
+          "order": 1,
+          "of": 8,
+          "title": "Module 1: Overview & Prerequisites",
+          "duration": "15 minutes",
+          "overview": "Earn yield using stable LPs, lending, and auto-compounding vaults. This module orients you to safe venues, the wallet setup, and the exact prerequisites before depositing.",
+          "prerequisites": [
+            "Install MetaMask (or WalletConnect-compatible wallet).",
+            "Fund gas on the target chain (ETH on Ethereum, MATIC on Polygon, BNB on BNB Chain).",
+            "Have a small test amount ready (e.g., $50\u2013$100) for first deposit.",
+            "Bookmark the protocols you plan to use (e.g., Aave, Curve, Beefy)."
+          ],
+          "steps": [
+            "Open DeFi Hub \u2192 Passive Income.",
+            "Pick a chain (Ethereum, Polygon, or BNB Chain).",
+            "Select one conservative strategy (e.g., Aave USDC lending or Curve DAI/USDC LP).",
+            "Click \u201cView Steps\u201d to expand the deposit guide.",
+            "Approve the token (one-time) then deposit a small test amount.",
+            "Enable auto-compound (if available) and confirm in your wallet.",
+            "Write down the protocol URL, deposit date, expected APY, and risks in your notes."
+          ],
+          "notes_prompt": "Record your funding source, gas cost, and which protocol you deposited into. Add any questions for the next module.",
+          "resources": {
+            "video": {
+              "label": "Watch Video",
+              "url": "https://example.com/passive-income-module-1-video"
+            },
+            "pdf": {
+              "label": "Download PDF",
+              "url": "https://example.com/passive-income-module-1-guide.pdf"
+            },
+            "community": {
+              "label": "Join Discussion",
+              "url": "https://example.com/community-passive-income"
+            }
+          },
+          "additional_resources": [
+            {
+              "label": "Aave Docs",
+              "url": "https://docs.aave.com"
+            },
+            {
+              "label": "Curve Docs",
+              "url": "https://resources.curve.fi"
+            },
+            {
+              "label": "Beefy Docs",
+              "url": "https://docs.beefy.finance"
+            }
+          ],
+          "previous": null,
+          "next": {
+            "label": "Next Module",
+            "slug": "passive-income-module-2"
+          }
+        },
+        {
+          "slug": "passive-income-module-2",
+          "track": "passive-income-training",
+          "order": 2,
+          "of": 8,
+          "title": "Module 2: Wallet & Safety Setup",
+          "duration": "20 minutes",
+          "overview": "Harden your wallet, set spending limits, and learn safe approval habits before interacting with DeFi.",
+          "prerequisites": [
+            "MetaMask installed and backed up (seed phrase offline).",
+            "Hardware wallet available (Ledger/Trezor) \u2014 recommended."
+          ],
+          "steps": [
+            "Create a dedicated DeFi wallet; keep the trading wallet separate.",
+            "Add the target networks in MetaMask (Ethereum, Polygon, BNB).",
+            "Set custom spending caps when approving tokens (avoid unlimited).",
+            "Use revoke tools to view and remove old allowances.",
+            "Save your protocol list and official URLs in bookmarks only (avoid search-engine phishing)."
+          ],
+          "notes_prompt": "List your connected networks and which allowances you revoked today.",
+          "resources": {
+            "video": {
+              "label": "Wallet Hardening Walkthrough",
+              "url": "https://example.com/wallet-safety-video"
+            },
+            "pdf": {
+              "label": "Allowance/Revoke Checklist",
+              "url": "https://example.com/wallet-safety.pdf"
+            },
+            "community": {
+              "label": "Security Q&A Thread",
+              "url": "https://example.com/community-security"
+            }
+          },
+          "additional_resources": [
+            {
+              "label": "Etherscan Token Approvals",
+              "url": "https://etherscan.io/tokenapprovalchecker"
+            },
+            {
+              "label": "Revoke.cash",
+              "url": "https://revoke.cash"
+            },
+            {
+              "label": "Chainlist (Networks)",
+              "url": "https://chainlist.org"
+            }
+          ],
+          "previous": {
+            "label": "Previous Module",
+            "slug": "passive-income-module-1"
+          },
+          "next": {
+            "label": "Next Module",
+            "slug": "passive-income-module-3"
+          }
+        },
+        {
+          "slug": "passive-income-module-3",
+          "track": "passive-income-training",
+          "order": 3,
+          "of": 8,
+          "title": "Module 3: On/Off-Ramps & Bridging",
+          "duration": "20 minutes",
+          "overview": "Move funds safely from fiat to crypto, then bridge to the target chain with minimal fees and errors.",
+          "prerequisites": [
+            "KYC and bank connection with a reputable on-ramp (CeFi or fiat on-ramp)."
+          ],
+          "steps": [
+            "Buy USDC/USDT on your on-ramp (or centralized exchange).",
+            "Withdraw to your self-custody wallet on the correct network (double-check address and chain).",
+            "If needed, bridge stablecoins to the target chain using a reputable bridge.",
+            "Send a small test first, then the main amount once confirmed.",
+            "Record tx hashes and bridge URLs in your notes."
+          ],
+          "notes_prompt": "Document which on-ramp/bridge you used, fees paid, and total time.",
+          "resources": {
+            "video": {
+              "label": "On/Off-Ramp Overview",
+              "url": "https://example.com/onramp-video"
+            },
+            "pdf": {
+              "label": "Bridging Checklist",
+              "url": "https://example.com/bridging.pdf"
+            },
+            "community": {
+              "label": "Bridge Selection Thread",
+              "url": "https://example.com/community-bridging"
+            }
+          },
+          "additional_resources": [
+            {
+              "label": "Bridge Aggregators",
+              "url": "https://www.bridgeaway.xyz"
+            },
+            {
+              "label": "L2 Fees (L2Beat)",
+              "url": "https://l2beat.com/scaling/fees"
+            }
+          ],
+          "previous": {
+            "label": "Previous Module",
+            "slug": "passive-income-module-2"
+          },
+          "next": {
+            "label": "Next Module",
+            "slug": "passive-income-module-4"
+          }
+        },
+        {
+          "slug": "passive-income-module-4",
+          "track": "passive-income-training",
+          "order": 4,
+          "of": 8,
+          "title": "Module 4: Lending with Aave (Deposit/Withdraw)",
+          "duration": "25 minutes",
+          "overview": "Learn to deposit, earn yield, and withdraw safely using Aave lending markets for stablecoins.",
+          "prerequisites": [
+            "USDC or DAI in your wallet on the target chain.",
+            "Gas token funded for the chain."
+          ],
+          "steps": [
+            "Open Aave UI and connect your wallet.",
+            "Select the stablecoin market (e.g., USDC on Polygon).",
+            "Approve the token spending cap (set a cap, avoid unlimited).",
+            "Deposit a small test amount (e.g., $50) to confirm flow.",
+            "Check the dashboard for APY and health metrics.",
+            "Practice a partial withdrawal back to your wallet."
+          ],
+          "notes_prompt": "Record deposit APY, health factor, and your first withdraw test hash.",
+          "resources": {
+            "video": {
+              "label": "Aave Deposit/Withdraw Walkthrough",
+              "url": "https://example.com/aave-lending-video"
+            },
+            "pdf": {
+              "label": "Lending Safety Checklist",
+              "url": "https://example.com/aave-lending.pdf"
+            },
+            "community": {
+              "label": "Aave Support Thread",
+              "url": "https://example.com/community-aave"
+            }
+          },
+          "additional_resources": [
+            {
+              "label": "Aave Docs",
+              "url": "https://docs.aave.com"
+            },
+            {
+              "label": "Aave App",
+              "url": "https://app.aave.com"
+            }
+          ],
+          "previous": {
+            "label": "Previous Module",
+            "slug": "passive-income-module-3"
+          },
+          "next": {
+            "label": "Next Module",
+            "slug": "passive-income-module-5"
+          }
+        },
+        {
+          "slug": "passive-income-module-5",
+          "track": "passive-income-training",
+          "order": 5,
+          "of": 8,
+          "title": "Module 5: LP Basics with Curve (DAI/USDC)",
+          "duration": "25 minutes",
+          "overview": "Provide liquidity to a stable pool on Curve, understand IL (low for stables), and claim rewards if applicable.",
+          "prerequisites": [
+            "DAI and USDC in your wallet on the target chain."
+          ],
+          "steps": [
+            "Open Curve and locate the DAI/USDC pool on your chain.",
+            "Add liquidity with a small test first; note the minimum received amounts.",
+            "Stake LP tokens if the pool offers boosted rewards (optional).",
+            "Record your LP token balance and pool share.",
+            "Practice removing a small portion of liquidity to confirm exits."
+          ],
+          "notes_prompt": "Write down pool name, your share %, expected APR, and the staking option used.",
+          "resources": {
+            "video": {
+              "label": "Curve LP Walkthrough",
+              "url": "https://example.com/curve-lp-video"
+            },
+            "pdf": {
+              "label": "LP Do's and Don'ts",
+              "url": "https://example.com/curve-lp.pdf"
+            },
+            "community": {
+              "label": "Curve Pool Thread",
+              "url": "https://example.com/community-curve"
+            }
+          },
+          "additional_resources": [
+            {
+              "label": "Curve Docs",
+              "url": "https://resources.curve.fi"
+            },
+            {
+              "label": "Impermanent Loss Primer",
+              "url": "https://academy.binance.com/en/articles/impermanent-loss-explained"
+            }
+          ],
+          "previous": {
+            "label": "Previous Module",
+            "slug": "passive-income-module-4"
+          },
+          "next": {
+            "label": "Next Module",
+            "slug": "passive-income-module-6"
+          }
+        },
+        {
+          "slug": "passive-income-module-6",
+          "track": "passive-income-training",
+          "order": 6,
+          "of": 8,
+          "title": "Module 6: Auto-Compounding Vaults (Beefy)",
+          "duration": "20 minutes",
+          "overview": "Use a reputable vault (e.g., Beefy) to auto-compound LP or lending yields and understand associated risks/fees.",
+          "prerequisites": [
+            "Have LP tokens (from Module 5) or a supported token for vault deposit."
+          ],
+          "steps": [
+            "Open Beefy, connect your wallet, and find the matching vault for your asset/LP.",
+            "Review the vault\u2019s performance fee and compounding frequency.",
+            "Approve and deposit a small test amount into the vault.",
+            "Confirm auto-compounding status and review the expected APY.",
+            "Test a small withdrawal to ensure the flow back to your wallet."
+          ],
+          "notes_prompt": "Record the vault name, fees, APY, and a link to the vault page for tracking.",
+          "resources": {
+            "video": {
+              "label": "Beefy Vault Walkthrough",
+              "url": "https://example.com/beefy-vault-video"
+            },
+            "pdf": {
+              "label": "Vault Risk Checklist",
+              "url": "https://example.com/beefy-vault.pdf"
+            },
+            "community": {
+              "label": "Beefy Vault Thread",
+              "url": "https://example.com/community-beefy"
+            }
+          },
+          "additional_resources": [
+            {
+              "label": "Beefy Docs",
+              "url": "https://docs.beefy.finance"
+            }
+          ],
+          "previous": {
+            "label": "Previous Module",
+            "slug": "passive-income-module-5"
+          },
+          "next": {
+            "label": "Next Module",
+            "slug": "passive-income-module-7"
+          }
+        },
+        {
+          "slug": "passive-income-module-7",
+          "track": "passive-income-training",
+          "order": 7,
+          "of": 8,
+          "title": "Module 7: Monitoring, APY Decay & Rotation",
+          "duration": "15 minutes",
+          "overview": "Create a weekly routine to monitor positions, detect APY decay, and rotate into better risk-adjusted yields.",
+          "prerequisites": [
+            "Have at least one live position (lending/LP/vault)."
+          ],
+          "steps": [
+            "Review your positions weekly; record APY/APR and any fee changes.",
+            "If APY decays or risks rise, plan a rotation into a safer or higher-quality pool.",
+            "Check audits/news for each protocol (upgrade notices, incidents).",
+            "Update your notes with realized weekly yield and any adjustments made."
+          ],
+          "notes_prompt": "Summarize your weekly changes and the reason for any rotation.",
+          "resources": {
+            "video": {
+              "label": "Portfolio Monitoring Workflow",
+              "url": "https://example.com/monitoring-video"
+            },
+            "pdf": {
+              "label": "Weekly Checklist",
+              "url": "https://example.com/weekly-checklist.pdf"
+            },
+            "community": {
+              "label": "Rotation Ideas Thread",
+              "url": "https://example.com/community-rotation"
+            }
+          },
+          "additional_resources": [
+            {
+              "label": "DeFiLlama Yields",
+              "url": "https://defillama.com/yields"
+            }
+          ],
+          "previous": {
+            "label": "Previous Module",
+            "slug": "passive-income-module-6"
+          },
+          "next": {
+            "label": "Next Module",
+            "slug": "passive-income-module-8"
+          }
+        },
+        {
+          "slug": "passive-income-module-8",
+          "track": "passive-income-training",
+          "order": 8,
+          "of": 8,
+          "title": "Module 8: Exiting, Reports & Automation",
+          "duration": "20 minutes",
+          "overview": "Practice safe exits, export reports, and set automation/alerts for hands-off monitoring.",
+          "prerequisites": [
+            "One or more positions to exit or trim."
+          ],
+          "steps": [
+            "Practice a partial exit: withdraw a portion of your position and convert to stablecoin.",
+            "Export a weekly/monthly report (CSV/JSON) with deposits, withdrawals, and realized yield.",
+            "Set price/APY alerts and configure email/Telegram notifications.",
+            "Create a recurring calendar reminder for your weekly DeFi review."
+          ],
+          "notes_prompt": "Record realized yield, fees, and your new stablecoin allocation plan.",
+          "resources": {
+            "video": {
+              "label": "Exit & Reports Walkthrough",
+              "url": "https://example.com/exit-reports-video"
+            },
+            "pdf": {
+              "label": "Exit Playbook",
+              "url": "https://example.com/exit-playbook.pdf"
+            },
+            "community": {
+              "label": "Automation Ideas",
+              "url": "https://example.com/community-automation"
+            }
+          },
+          "additional_resources": [
+            {
+              "label": "Revoke Tools",
+              "url": "https://revoke.cash"
+            },
+            {
+              "label": "Tax/Report Tools",
+              "url": "https://koinly.io"
+            }
+          ],
+          "previous": {
+            "label": "Previous Module",
+            "slug": "passive-income-module-7"
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "track_id": "strategy-builder-training",
+      "title": "Strategy Builder Training",
+      "modules": [
+        {
+          "module": 1,
+          "title": "Foundation of Strategy Building",
+          "overview": "Learn the core principles of creating a profitable crypto trading strategy.",
+          "prerequisites": "Basic knowledge of cryptocurrency markets.",
+          "duration": "20 minutes",
+          "content": [
+            "Understand the concept of edge in trading.",
+            "Identify your risk tolerance and trading style.",
+            "Familiarize yourself with market types: trending, ranging, volatile."
+          ],
+          "notes": "A good strategy is built around your personal goals and the market's behavior.",
+          "resources": [
+            {
+              "type": "Video Tutorial",
+              "link": "https://example.com/video-strategy-foundation"
+            },
+            {
+              "type": "Strategy Documentation",
+              "link": "https://example.com/strategy-foundation.pdf"
+            }
+          ]
+        },
+        {
+          "module": 2,
+          "title": "Technical Indicators & Tools",
+          "overview": "Master the key technical tools to support your trading decisions.",
+          "prerequisites": "Completion of Module 1.",
+          "duration": "25 minutes",
+          "content": [
+            "Learn about Moving Averages, RSI, MACD.",
+            "Explore support and resistance levels.",
+            "Practice using a charting platform like TradingView."
+          ],
+          "notes": "Only use indicators that complement your strategy.",
+          "resources": [
+            {
+              "type": "Video Tutorial",
+              "link": "https://example.com/video-indicators"
+            },
+            {
+              "type": "Strategy Documentation",
+              "link": "https://example.com/indicators-guide.pdf"
+            }
+          ]
+        },
+        {
+          "module": 3,
+          "title": "Backtesting Strategies",
+          "overview": "Evaluate your strategy using historical data.",
+          "prerequisites": "Knowledge of charting tools and indicators.",
+          "duration": "30 minutes",
+          "content": [
+            "Select a market and timeframe.",
+            "Mark entries and exits on historical charts.",
+            "Record results and adjust parameters."
+          ],
+          "notes": "Backtesting provides a simulated performance before live trading.",
+          "resources": [
+            {
+              "type": "Video Tutorial",
+              "link": "https://example.com/video-backtesting"
+            },
+            {
+              "type": "Strategy Documentation",
+              "link": "https://example.com/backtesting-checklist.pdf"
+            }
+          ]
+        },
+        {
+          "module": 4,
+          "title": "Paper Trading",
+          "overview": "Practice your strategy without risking capital.",
+          "prerequisites": "Completed backtesting with positive results.",
+          "duration": "15 minutes",
+          "content": [
+            "Set up a paper trading account.",
+            "Execute trades according to your strategy rules.",
+            "Analyze results and fine-tune."
+          ],
+          "notes": "Paper trading bridges the gap between theory and live markets.",
+          "resources": [
+            {
+              "type": "Video Tutorial",
+              "link": "https://example.com/video-papertrading"
+            },
+            {
+              "type": "Strategy Documentation",
+              "link": "https://example.com/papertrading-guide.pdf"
+            }
+          ]
+        },
+        {
+          "module": 5,
+          "title": "Risk Management",
+          "overview": "Learn to control losses and maximize gains.",
+          "prerequisites": "Modules 1\u20134 completed.",
+          "duration": "25 minutes",
+          "content": [
+            "Set stop-loss and take-profit levels.",
+            "Determine position sizing.",
+            "Diversify across assets and strategies."
+          ],
+          "notes": "Risk management ensures survival during losing streaks.",
+          "resources": [
+            {
+              "type": "Video Tutorial",
+              "link": "https://example.com/video-riskmanagement"
+            },
+            {
+              "type": "Strategy Documentation",
+              "link": "https://example.com/riskmanagement.pdf"
+            }
+          ]
+        },
+        {
+          "module": 6,
+          "title": "Live Trading Setup",
+          "overview": "Prepare your live account for strategy execution.",
+          "prerequisites": "Positive performance in paper trading.",
+          "duration": "20 minutes",
+          "content": [
+            "Fund your trading account.",
+            "Install necessary tools and alerts.",
+            "Test order execution speed and reliability."
+          ],
+          "notes": "Always start with small capital when going live.",
+          "resources": [
+            {
+              "type": "Video Tutorial",
+              "link": "https://example.com/video-livetrading"
+            },
+            {
+              "type": "Strategy Documentation",
+              "link": "https://example.com/livetrading-checklist.pdf"
+            }
+          ]
+        },
+        {
+          "module": 7,
+          "title": "Monitoring & Adjusting",
+          "overview": "Track your performance and adapt to market changes.",
+          "prerequisites": "Live trading experience.",
+          "duration": "15 minutes",
+          "content": [
+            "Review trade logs weekly.",
+            "Identify patterns in wins and losses.",
+            "Adjust parameters if performance declines."
+          ],
+          "notes": "Continuous improvement is key to long-term success.",
+          "resources": [
+            {
+              "type": "Video Tutorial",
+              "link": "https://example.com/video-monitoring"
+            },
+            {
+              "type": "Strategy Documentation",
+              "link": "https://example.com/monitoring-guide.pdf"
+            }
+          ]
+        },
+        {
+          "module": 8,
+          "title": "Scaling Up",
+          "overview": "Increase your capital allocation safely.",
+          "prerequisites": "Consistent profitability for 3+ months.",
+          "duration": "20 minutes",
+          "content": [
+            "Gradually increase position sizes.",
+            "Diversify into new markets.",
+            "Consider automation tools."
+          ],
+          "notes": "Scaling should never compromise risk management.",
+          "resources": [
+            {
+              "type": "Video Tutorial",
+              "link": "https://example.com/video-scaling"
+            },
+            {
+              "type": "Strategy Documentation",
+              "link": "https://example.com/scaling-strategies.pdf"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

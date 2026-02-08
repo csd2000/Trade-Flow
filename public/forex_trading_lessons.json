@@ -1,0 +1,644 @@
+{
+  "forex_trading_system": {
+    "module_info": {
+      "id": "forex-trading-system",
+      "title": "Forex Trading Systems",
+      "description": "Complete currency trading education with technical analysis, risk management, and news trading",
+      "total_lessons": 4,
+      "estimated_duration": "97 minutes",
+      "difficulty": "Intermediate",
+      "success_rate": "78%"
+    },
+    "lessons": [
+      {
+        "id": "forex-1",
+        "title": "Forex Market Fundamentals",
+        "duration": "25 min",
+        "difficulty": "Beginner",
+        "description": "Understanding currency pairs and global markets",
+        "learning_objectives": [
+          "Major, minor, and exotic pairs",
+          "Market sessions and overlap times",
+          "Economic indicators impact", 
+          "Central bank policies"
+        ],
+        "detailed_content": {
+          "introduction": "The foreign exchange market is the world's largest financial market with over $7.5 trillion in daily trading volume. Understanding currency pairs and market fundamentals is essential for successful forex trading.",
+          "sections": [
+            {
+              "title": "Currency Pair Classifications",
+              "content": [
+                "Major Pairs: EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD - highest liquidity and lowest spreads",
+                "Minor Pairs (Crosses): EUR/GBP, EUR/JPY, GBP/JPY, AUD/JPY - moderate liquidity without USD",
+                "Exotic Pairs: USD/TRY, EUR/ZAR, GBP/MXN - higher spreads and volatility with emerging market currencies"
+              ],
+              "practical_examples": [
+                "EUR/USD = 1.0850 means 1 Euro = 1.0850 US Dollars",
+                "If you buy EUR/USD, you're buying Euros and selling US Dollars",
+                "Pip value calculation: For EUR/USD, 1 pip = 0.0001"
+              ]
+            },
+            {
+              "title": "Global Trading Sessions",
+              "content": [
+                "London Session (8:00-17:00 GMT): Highest volume, best for GBP and EUR pairs",
+                "New York Session (13:00-22:00 GMT): USD pairs most active, overlaps with London",
+                "Tokyo Session (23:00-8:00 GMT): JPY pairs dominate, lower volatility",
+                "Sydney Session (21:00-6:00 GMT): AUD/NZD focus, weekend gaps"
+              ],
+              "overlap_strategies": [
+                "London-New York overlap (13:00-17:00 GMT): Highest volatility and volume",
+                "Tokyo-London overlap (8:00-9:00 GMT): Good for JPY pairs",
+                "Avoid trading during session gaps for lower spreads"
+              ]
+            },
+            {
+              "title": "Economic Indicators & Market Impact",
+              "content": [
+                "High Impact: Non-Farm Payrolls (NFP), CPI, Interest Rate Decisions, GDP",
+                "Medium Impact: Unemployment Rate, Retail Sales, Industrial Production",
+                "Low Impact: Consumer Confidence, Manufacturing PMI"
+              ],
+              "indicator_examples": [
+                "NFP Release: +200K jobs vs 150K expected = USD strength",
+                "ECB Rate Hike: 0.25% increase = EUR bullish",
+                "UK CPI: 5.2% vs 4.8% expected = GBP rally"
+              ]
+            },
+            {
+              "title": "Central Bank Policies",
+              "content": [
+                "Federal Reserve (USD): FOMC meetings 8 times/year, focus on employment and inflation",
+                "European Central Bank (EUR): Monetary policy decisions every 6 weeks",
+                "Bank of England (GBP): MPC meetings 8 times/year, inflation targeting",
+                "Bank of Japan (JPY): Known for intervention and ultra-low rates"
+              ]
+            }
+          ],
+          "practical_exercises": [
+            "Identify 5 major currency pairs and their current exchange rates",
+            "Calculate pip values for EUR/USD, GBP/JPY, and USD/CAD",
+            "Track economic calendar for one week and note market reactions",
+            "Observe price action during London-NY session overlap"
+          ],
+          "assessment_questions": [
+            "What are the three classifications of currency pairs?",
+            "Which trading session has the highest volume?",
+            "How do central bank interest rate decisions affect currency values?",
+            "Calculate the pip value for a $10,000 position in EUR/USD"
+          ]
+        },
+        "resources": {
+          "required_tools": ["TradingView", "Economic Calendar", "Forex.com", "MetaTrader"],
+          "recommended_reading": [
+            "Currency Trading & Intermarket Analysis by Ashraf Laidi",
+            "The Little Book of Currency Trading by Kathy Lien"
+          ],
+          "video_tutorials": [
+            "https://www.youtube.com/watch?v=forex-fundamentals",
+            "https://www.babypips.com/learn/forex"
+          ],
+          "practice_platforms": [
+            "TradingView Paper Trading",
+            "OANDA Demo Account",
+            "MetaTrader Demo"
+          ]
+        }
+      },
+      {
+        "id": "forex-2", 
+        "title": "Technical Analysis for Forex",
+        "duration": "30 min",
+        "difficulty": "Intermediate",
+        "description": "Chart patterns and indicators specific to currency trading",
+        "learning_objectives": [
+          "Support and resistance levels",
+          "Trend line analysis", 
+          "Moving average strategies",
+          "RSI and MACD signals"
+        ],
+        "detailed_content": {
+          "introduction": "Technical analysis is crucial for forex trading success. Currency pairs exhibit predictable patterns and respond well to technical indicators when combined with fundamental analysis.",
+          "sections": [
+            {
+              "title": "Support and Resistance Levels",
+              "content": [
+                "Support: Price level where buying pressure exceeds selling pressure",
+                "Resistance: Price level where selling pressure exceeds buying pressure", 
+                "Psychological levels: Round numbers like 1.2000, 1.2500",
+                "Previous highs/lows become future resistance/support"
+              ],
+              "identification_methods": [
+                "Horizontal lines at previous swing highs/lows",
+                "Pivot points calculation: (High + Low + Close) / 3",
+                "Fibonacci retracement levels: 23.6%, 38.2%, 50%, 61.8%",
+                "Volume profile analysis at key price levels"
+              ],
+              "trading_strategies": [
+                "Buy at support with tight stop loss below support",
+                "Sell at resistance with stop loss above resistance", 
+                "Breakout trading: Enter when price breaks through with volume",
+                "False breakout: Fade breakouts that quickly reverse"
+              ]
+            },
+            {
+              "title": "Trend Line Analysis",
+              "content": [
+                "Uptrend: Series of higher highs and higher lows",
+                "Downtrend: Series of lower highs and lower lows",
+                "Sideways trend: Price moves within horizontal range"
+              ],
+              "drawing_techniques": [
+                "Connect at least 2-3 significant highs for resistance trend line",
+                "Connect at least 2-3 significant lows for support trend line",
+                "Use wicks/shadows, not just closing prices",
+                "The more touches, the stronger the trend line"
+              ],
+              "trend_line_strategies": [
+                "Buy bounces off uptrend support line",
+                "Sell bounces off downtrend resistance line",
+                "Trade breakouts with increased volume",
+                "Use trend lines as trailing stop loss levels"
+              ]
+            },
+            {
+              "title": "Moving Average Strategies",
+              "content": [
+                "Simple Moving Average (SMA): Arithmetic mean of prices",
+                "Exponential Moving Average (EMA): More weight to recent prices",
+                "Common periods: 20, 50, 100, 200"
+              ],
+              "moving_average_systems": [
+                "Golden Cross: 50 EMA crosses above 200 EMA (bullish)",
+                "Death Cross: 50 EMA crosses below 200 EMA (bearish)",
+                "EMA bounce strategy: Price bounces off 20/50 EMA in trending market",
+                "Multiple EMA system: 8, 21, 55 EMA alignment"
+              ],
+              "practical_application": [
+                "EUR/USD: Use 20/50 EMA crossover for trend changes",
+                "GBP/JPY: 200 SMA as major trend filter",
+                "USD/CAD: EMA bounce strategy during strong trends",
+                "Multiple timeframe analysis: Daily for trend, H4 for entries"
+              ]
+            },
+            {
+              "title": "RSI and MACD Signals",
+              "content": [
+                "RSI (Relative Strength Index): Momentum oscillator (0-100)",
+                "MACD (Moving Average Convergence Divergence): Trend-following momentum"
+              ],
+              "rsi_strategies": [
+                "Oversold: RSI below 30 (potential buy signal)",
+                "Overbought: RSI above 70 (potential sell signal)",
+                "Divergence: Price makes new high/low but RSI doesn't",
+                "RSI trend line breaks: Draw trend lines on RSI itself"
+              ],
+              "macd_strategies": [
+                "MACD line crosses above signal line: Bullish",
+                "MACD line crosses below signal line: Bearish",  
+                "Histogram analysis: Momentum acceleration/deceleration",
+                "Zero line cross: MACD above/below zero confirms trend"
+              ],
+              "combination_strategies": [
+                "RSI oversold + MACD bullish cross = Strong buy signal",
+                "Price at support + RSI divergence = Reversal setup",
+                "MACD histogram declining + RSI overbought = Exit signal"
+              ]
+            }
+          ],
+          "practical_exercises": [
+            "Draw support/resistance on EUR/USD daily chart",
+            "Identify trend lines on GBP/JPY 4-hour chart",
+            "Set up 20/50 EMA system on USD/JPY",
+            "Find RSI divergences on AUD/USD weekly chart",
+            "Combine MACD and RSI signals for entry timing"
+          ],
+          "case_studies": [
+            {
+              "pair": "EUR/USD",
+              "scenario": "ECB dovish stance with technical breakdown",
+              "setup": "Price breaks below 1.0800 support, RSI oversold but no divergence",
+              "action": "Wait for RSI to show bullish divergence before buying"
+            },
+            {
+              "pair": "GBP/JPY", 
+              "scenario": "Brexit uncertainty with technical bounce",
+              "setup": "Price bounces off 200 SMA, MACD shows bullish cross",
+              "action": "Long position with stop below 200 SMA"
+            }
+          ]
+        },
+        "resources": {
+          "required_tools": ["TradingView Premium", "MetaTrader 4/5", "Forex Factory"],
+          "indicator_settings": [
+            "RSI: 14 period, 30/70 levels",
+            "MACD: 12,26,9 standard settings",
+            "EMAs: 20,50,200 periods"
+          ],
+          "chart_templates": [
+            "Daily trend analysis template",
+            "4-hour entry timing template", 
+            "Multi-timeframe dashboard"
+          ]
+        }
+      },
+      {
+        "id": "forex-3",
+        "title": "Risk Management in Forex", 
+        "duration": "20 min",
+        "difficulty": "Advanced",
+        "description": "Protecting capital in leveraged currency trading",
+        "learning_objectives": [
+          "Position sizing with leverage",
+          "Stop loss placement",
+          "Risk-reward ratios",
+          "Correlation analysis"
+        ],
+        "detailed_content": {
+          "introduction": "Risk management is the most critical aspect of forex trading. With leverage up to 500:1, proper risk control determines long-term success or failure.",
+          "sections": [
+            {
+              "title": "Position Sizing with Leverage",
+              "content": [
+                "Leverage amplifies both profits and losses",
+                "1% rule: Never risk more than 1% of account per trade",
+                "2% rule: Maximum 2% risk for experienced traders",
+                "Account size determines maximum position size"
+              ],
+              "position_sizing_formulas": [
+                "Risk Amount = Account Size × Risk Percentage",
+                "Position Size = Risk Amount ÷ (Entry Price - Stop Loss)",
+                "Lot Size = Position Size ÷ Contract Size",
+                "Max Leverage = Account Size ÷ Margin Required"
+              ],
+              "practical_examples": [
+                "$10,000 account, 1% risk = $100 maximum risk per trade",
+                "EUR/USD at 1.0800, stop at 1.0750, risk 50 pips = 20,000 units",
+                "Standard lot = 100,000 units = 0.2 lots for this trade",
+                "With 100:1 leverage, margin required = $108"
+              ],
+              "leverage_guidelines": [
+                "New traders: Maximum 10:1 leverage",
+                "Experienced traders: 20:1 to 50:1 leverage",
+                "Professional traders: Up to 100:1 with strict rules",
+                "Avoid maximum leverage offered by brokers"
+              ]
+            },
+            {
+              "title": "Stop Loss Placement Strategies",
+              "content": [
+                "Technical stop loss: Based on chart patterns",
+                "Volatility stop loss: Based on ATR (Average True Range)",
+                "Percentage stop loss: Fixed percentage from entry",
+                "Time-based stop loss: Exit after specific time period"
+              ],
+              "technical_stop_loss_methods": [
+                "Below/above previous swing low/high",
+                "Below/above support/resistance levels",
+                "Beyond trend line breaks", 
+                "Outside of chart pattern boundaries"
+              ],
+              "atr_based_stops": [
+                "ATR(14) × 2 = Conservative stop distance",
+                "ATR(14) × 1.5 = Moderate stop distance",
+                "ATR(14) × 1 = Aggressive stop distance",
+                "Adjust ATR multiplier based on market volatility"
+              ],
+              "stop_loss_best_practices": [
+                "Place stops at logical technical levels",
+                "Avoid round number stop losses (predictable)",
+                "Don't move stops against your position",
+                "Use trailing stops in profitable trades"
+              ]
+            },
+            {
+              "title": "Risk-Reward Ratios",
+              "content": [
+                "Minimum 1:2 risk-reward ratio recommended",
+                "1:3 risk-reward allows 75% losing trades",
+                "Calculate profit target before entering trade",
+                "Adjust position size based on R:R ratio"
+              ],
+              "risk_reward_calculations": [
+                "Risk = Entry Price - Stop Loss Price",
+                "Reward = Take Profit Price - Entry Price", 
+                "R:R Ratio = Reward ÷ Risk",
+                "Breakeven Win Rate = 1 ÷ (1 + R:R Ratio)"
+              ],
+              "profit_target_strategies": [
+                "Previous resistance/support levels",
+                "Fibonacci extension levels: 127.2%, 161.8%",
+                "Measured moves: Pattern height projection",
+                "Multiple take profit levels (scale out)"
+              ],
+              "expectancy_formula": [
+                "Expectancy = (Win Rate × Average Win) - (Loss Rate × Average Loss)",
+                "Positive expectancy = Profitable system",
+                "Example: 40% wins, avg win $300, avg loss $100",
+                "Expectancy = (0.4 × 300) - (0.6 × 100) = $60 per trade"
+              ]
+            },
+            {
+              "title": "Currency Correlation Analysis",
+              "content": [
+                "Positive correlation: Pairs move in same direction",
+                "Negative correlation: Pairs move in opposite directions",
+                "Correlation coefficient: -1 to +1 range",
+                "Correlations change over time and market conditions"
+              ],
+              "major_correlations": [
+                "EUR/USD vs GBP/USD: Usually positive correlation",
+                "USD/CHF vs EUR/USD: Strong negative correlation",
+                "AUD/USD vs NZD/USD: High positive correlation",
+                "USD/JPY vs EUR/JPY: Moderate positive correlation"
+              ],
+              "correlation_risk_management": [
+                "Avoid multiple positions in highly correlated pairs",
+                "Reduce position size when trading correlated pairs",
+                "Hedge with negatively correlated pairs",
+                "Monitor correlations during major news events"
+              ],
+              "commodity_currency_correlations": [
+                "AUD/USD vs Gold prices: Positive correlation",
+                "CAD/USD vs Oil prices: Strong positive correlation",
+                "NZD/USD vs Dairy prices: Moderate correlation",
+                "Use correlation for confirmation signals"
+              ]
+            }
+          ],
+          "risk_management_checklist": [
+            "✓ Never risk more than 1-2% per trade",
+            "✓ Set stop loss before entering position", 
+            "✓ Calculate position size based on stop distance",
+            "✓ Maintain minimum 1:2 risk-reward ratio",
+            "✓ Check correlation with existing positions",
+            "✓ Keep trading journal with R:R ratios",
+            "✓ Review and adjust risk parameters monthly"
+          ],
+          "common_mistakes": [
+            "Moving stop losses against position",
+            "Risking too much on 'sure thing' trades",
+            "Ignoring correlation when opening multiple positions",
+            "Not calculating position size before entry",
+            "Emotional decision making during drawdowns"
+          ]
+        },
+        "resources": {
+          "risk_calculators": [
+            "Position size calculator",
+            "Risk-reward ratio calculator", 
+            "Correlation matrix tools",
+            "ATR-based stop loss calculator"
+          ],
+          "recommended_tools": [
+            "TradingView position size tool",
+            "Forex Factory correlation matrix",
+            "MetaTrader risk management EAs",
+            "Excel risk management spreadsheet"
+          ]
+        }
+      },
+      {
+        "id": "forex-4",
+        "title": "News Trading Strategies",
+        "duration": "22 min", 
+        "difficulty": "Advanced",
+        "description": "Trading economic announcements and market events",
+        "learning_objectives": [
+          "Economic calendar usage",
+          "NFP and CPI trading",
+          "Central bank announcements", 
+          "Volatility management"
+        ],
+        "detailed_content": {
+          "introduction": "News trading in forex requires precise timing, risk management, and understanding of market expectations vs. actual results. Economic releases can cause 100+ pip moves in minutes.",
+          "sections": [
+            {
+              "title": "Economic Calendar Mastery",
+              "content": [
+                "High impact events: NFP, CPI, Interest Rate decisions, GDP",
+                "Medium impact: Unemployment, Retail Sales, PMI",
+                "Low impact: Consumer Confidence, Factory Orders"
+              ],
+              "calendar_interpretation": [
+                "Previous: Last month's/quarter's actual result",
+                "Forecast: Market consensus expectation", 
+                "Actual: Real released number",
+                "Deviation: Actual vs Forecast difference"
+              ],
+              "market_reaction_patterns": [
+                "Deviation >0.2%: Usually significant market move",
+                "Deviation >0.5%: Major market reaction expected",
+                "Same as forecast: Minimal reaction typical",
+                "Opposite to forecast: Strong reversal possible"
+              ],
+              "pre_news_preparation": [
+                "Check economic calendar 24 hours ahead",
+                "Note previous results and forecasts",
+                "Identify affected currency pairs",
+                "Set up charts with tight spreads broker",
+                "Prepare position sizes and risk parameters"
+              ]
+            },
+            {
+              "title": "NFP (Non-Farm Payrolls) Trading",
+              "content": [
+                "Released first Friday of each month at 8:30 AM ET",
+                "Most important US employment indicator",
+                "Affects USD across all major pairs",
+                "Average move: 50-150 pips in first hour"
+              ],
+              "nfp_trading_strategies": [
+                "Straddle strategy: Pending orders above/below current price",
+                "Fade strategy: Trade against initial knee-jerk reaction",
+                "Momentum strategy: Follow direction after first 15 minutes",
+                "Wait and see: Enter after initial volatility subsides"
+              ],
+              "nfp_setup_example": [
+                "EUR/USD at 1.0800 pre-NFP",
+                "Place buy stop at 1.0820, sell stop at 1.0780", 
+                "Stop loss 20 pips, take profit 40 pips (1:2 R:R)",
+                "Cancel unfilled order after first move completes"
+              ],
+              "nfp_key_components": [
+                "Headline number: Change in non-farm employment",
+                "Unemployment rate: Percentage of unemployed",
+                "Average hourly earnings: Wage inflation measure",
+                "Labor force participation: Economic health indicator"
+              ]
+            },
+            {
+              "title": "CPI (Consumer Price Index) Trading", 
+              "content": [
+                "Monthly inflation data from major economies",
+                "Core CPI excludes food and energy (more stable)",
+                "Fed's 2% inflation target is key reference",
+                "High CPI = hawkish policy expectations"
+              ],
+              "cpi_trading_approach": [
+                "Focus on Core CPI vs headline CPI",
+                "Year-over-year more important than monthly",
+                "Compare to central bank's inflation target",
+                "Watch for sustained trends over single readings"
+              ],
+              "cpi_currency_impact": [
+                "Higher than expected CPI = Currency strength",
+                "Lower than expected CPI = Currency weakness",
+                "Persistent high CPI = Interest rate hike expectations",
+                "Disinflation trends = Dovish monetary policy"
+              ],
+              "cpi_trading_pairs": [
+                "USD pairs: US CPI affects all USD crosses",
+                "EUR pairs: Eurozone CPI impacts ECB policy",
+                "GBP pairs: UK CPI influences BOE decisions",
+                "CAD pairs: Canadian CPI affects BOC stance"
+              ]
+            },
+            {
+              "title": "Central Bank Announcements",
+              "content": [
+                "FOMC: Federal Open Market Committee (8x/year)",
+                "ECB: European Central Bank (8x/year)",
+                "BOE: Bank of England (8x/year)",
+                "BOJ: Bank of Japan (8x/year)"
+              ],
+              "announcement_components": [
+                "Interest rate decision: Most important",
+                "Monetary policy statement: Policy stance",
+                "Press conference: Q&A with governor/chair",
+                "Economic projections: Growth and inflation forecasts"
+              ],
+              "trading_central_bank_events": [
+                "Rate hike surprise: Currency strength (50-200 pips)",
+                "Hawkish statement: Bullish currency reaction",
+                "Dovish surprise: Currency weakness",
+                "No change as expected: Minimal reaction"
+              ],
+              "fomc_trading_strategy": [
+                "Pre-positioning based on economic data trends",
+                "Straddle setup 30 minutes before announcement",
+                "Focus on USD pairs with highest liquidity",
+                "Watch for Jerome Powell's press conference tone"
+              ]
+            },
+            {
+              "title": "Volatility Management",
+              "content": [
+                "News events increase volatility dramatically",
+                "Spreads widen significantly during releases",
+                "Slippage risk higher with market orders",
+                "Liquidity decreases in first few minutes"
+              ],
+              "volatility_preparation": [
+                "Reduce position sizes by 50% during news",
+                "Use limit orders instead of market orders",
+                "Widen stop losses to account for volatility",
+                "Avoid trading 5 minutes before/after major news"
+              ],
+              "spread_management": [
+                "Check spreads on multiple brokers",
+                "ECN brokers typically have tighter spreads",
+                "Avoid trading during spread spikes",
+                "Factor spread cost into profit calculations"
+              ],
+              "news_trading_schedule": [
+                "8:30 AM ET: Most US economic data",
+                "10:00 AM ET: US factory orders, wholesale inventories",
+                "2:00 PM ET: FOMC announcements",
+                "London/European news: 9:30 AM GMT typically"
+              ]
+            }
+          ],
+          "news_trading_rules": [
+            "Never trade without knowing upcoming high-impact news",
+            "Always have predetermined risk management plan",
+            "Don't chase moves after initial 15-minute reaction",
+            "Keep positions small during volatile news periods",
+            "Focus on major currency pairs for better execution"
+          ],
+          "advanced_strategies": [
+            {
+              "strategy": "Binary Events Trading",
+              "description": "Trade central bank decisions with clear binary outcomes",
+              "execution": "Straddle setup with tight stops, quick profit taking"
+            },
+            {
+              "strategy": "Consensus Fade",
+              "description": "Trade against market consensus when technically justified",
+              "execution": "Wait for initial move, then fade if technical levels hold"
+            },
+            {
+              "strategy": "Multi-Release Combination",
+              "description": "Trade correlation between related economic indicators",
+              "execution": "Combine employment data with inflation data for stronger signals"
+            }
+          ]
+        },
+        "resources": {
+          "essential_tools": [
+            "Forex Factory economic calendar",
+            "TradingView economic calendar",
+            "Bloomberg economic calendar", 
+            "DailyFX calendar and analysis"
+          ],
+          "news_sources": [
+            "Reuters real-time news feed",
+            "Bloomberg terminal (professional)",
+            "ForexLive news and analysis",
+            "Central bank official websites"
+          ],
+          "recommended_brokers": [
+            "ECN brokers for tight spreads during news",
+            "Regulated brokers with fast execution",
+            "Brokers with news trading allowed",
+            "Multiple broker accounts for redundancy"
+          ]
+        }
+      }
+    ],
+    "practical_assignments": [
+      {
+        "title": "Week 1: Currency Pair Analysis",
+        "tasks": [
+          "Analyze 5 major pairs: current trends, key levels, session activity",
+          "Track economic calendar for one week, note market reactions",
+          "Calculate pip values for different position sizes",
+          "Observe price behavior during session overlaps"
+        ]
+      },
+      {
+        "title": "Week 2: Technical Analysis Practice", 
+        "tasks": [
+          "Draw support/resistance levels on 10 different charts",
+          "Set up moving average systems on TradingView",
+          "Find RSI divergences on various timeframes",
+          "Combine multiple indicators for entry signals"
+        ]
+      },
+      {
+        "title": "Week 3: Risk Management Implementation",
+        "tasks": [
+          "Create position sizing spreadsheet",
+          "Practice ATR-based stop loss placement",
+          "Calculate risk-reward ratios for 20 setups",
+          "Analyze currency correlations during major news"
+        ]
+      },
+      {
+        "title": "Week 4: News Trading Simulation",
+        "tasks": [
+          "Paper trade 5 major news events",
+          "Analyze market reactions vs expectations",
+          "Practice straddle strategies on demo account",
+          "Keep detailed journal of news trading results"
+        ]
+      }
+    ],
+    "certification_requirements": {
+      "passing_score": "80%",
+      "practical_demo": "Execute 10 profitable demo trades",
+      "theory_test": "Pass comprehensive forex knowledge exam",
+      "final_project": "Create complete forex trading plan with risk management"
+    }
+  }
+}

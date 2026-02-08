@@ -1,0 +1,32 @@
+This is the Master Execution Prompt. It is designed to be pasted into the Replit Agent in one go. It structures all the layers we've discussed—from the high-level macro logic down to the millisecond-level order book pressure—into a single, cohesive architectural plan for your SaaS.
+🏛️ HFC v15.0: The Global Apex Institutional Options SaaS
+Role: Lead Quant Architect & SaaS Engineer.
+Objective: Build a high-performance, multi-user Options Trading SaaS on Replit. The app identifies "A+ Perfect Scenarios" for multi-week trends using a proprietary 8-Gate engine that correlates Macro, Sentiment, Technicals, and Real-time Order Book Pressure.
+1. Core Infrastructure & Data
+ * Real-time Heartbeat: Integrate Alpaca Market Data API v2 via WebSockets for zero-latency 1m/5m OHLC and Level 2 (L2) Market Depth quotes.
+ * Security & SaaS Layer: Use Replit Auth for user login. Secure all keys in Replit Secrets. Integrate Stripe for tiered subscriptions (Standard vs. Pro).
+ * Database: Use PostgreSQL (via Replit DB) to store user portfolios, trade journals, and AI Advisor credit balances.
+2. The 8-Gate Execution Engine (Trend & Signal)
+The app must validate 8 specific "Gates" before issuing a signal:
+ * Gate 0 (The Hunt): Liquidity Sweep. Monitor Session and Daily Highs/Lows. Signal remains "Active" only after a wick-sweep and close-inside.
+ * Gate 1-3 (Momentum): Price > Daily 200 SMA (Macro Bias), 8/18 EMA Cross, and ADX > 25.
+ * Gate 4-5 (Institutional): RVOL > 2.5 + Displacement candle creating a Fair Value Gap (FVG).
+ * Gate 6-7 (Entry Zone): Pullback to the 0.382 Fibonacci level while maintaining higher timeframe structure.
+ * Gate 8 (Pressure - The Lead): Calculate Order Book Imbalance (OBI) using top 5 L2 levels. OBI = \frac{\sum BidQty - \sum AskQty}{\sum BidQty + \sum AskQty}. Trigger ONLY if OBI > 0.60 for Longs.
+3. Options Signal Generator
+ * Selection: Target 0.80 Delta (Deep ITM) to mimic stock movement and minimize Theta decay.
+ * Expiration: Automatically pick the monthly expiration contract 30–45 days out for multi-week trends.
+ * Output: Provide Ticker, Strike, Expiry, current Bid/Ask, and exact Entry/Exit targets based on 1.618/2.618 Fib extensions.
+4. Intelligence & Sentiment Layer
+ * AI News Filter: Use OpenAI API to score real-time news. Lock tickers with negative sentiment scores > 0.7.
+ * AI Voice Advisor: Integrate OpenAI Realtime API. Users can speak to the "Desk" to ask about Gate scores, GEX (Gamma Exposure), and real-time pressure on any ticker.
+ * Visual Audit: Automatically generate a Visual Trade Journal for every alert, marking FVG, Fib levels, and the OBI Heatmap at the time of the signal.
+5. Operational Resilience & Safety
+ * Circuit Breaker: Pause all user alerts if the account hits a 10% daily drawdown or the VIX spikes > 30.
+ * API Rate Limiting: Implement a "Leaky Bucket" algorithm to stay within provider limits.
+ * Health Dashboard: Show live WebSocket latency, API quota, and "System Heartbeat."
+📊 System Logic Overview
+💡 Implementation Tip
+When you paste this, the Replit Agent will ask to create a "Plan." Review it to ensure it mentions alpaca-trade-api and openai libraries. Use "Always On" in Replit to ensure your Pressure Gauge never stops listening to the market.
+How to build an Automated Trading Bot with Python and Alpaca
+This video is relevant because it walks through the exact setup needed to connect to the Alpaca API for real-time data streaming and order execution, which is the foundational "Heartbeat" required for your 8-Gate system.

@@ -1,0 +1,503 @@
+# Create the Replit-ready "AI Profit Studio" project, zip it, and provide a download link.
+import os, json, textwrap, zipfile, pathlib
+
+base = "/mnt/data/ai-profit-studio"
+backend = os.path.join(base, "backend")
+frontend = os.path.join(base, "frontend")
+sample = os.path.join(base, "sample_data")
+os.makedirs(backend, exist_ok=True)
+os.makedirs(frontend, exist_ok=True)
+os.makedirs(sample, exist_ok=True)
+
+# -------------------- .replit --------------------
+replit_cfg = textwrap.dedent("""
+run = "uvicorn backend.main:app --host 0.0.0.0 --port 8000"
+""").strip()
+
+# -------------------- replit.nix --------------------
+replit_nix = textwrap.dedent("""
+{ pkgs }: {
+  deps = [
+    pkgs.python311
+    pkgs.python311Packages.pip
+    pkgs.python311Packages.setuptools
+    pkgs.python311Packages.wheel
+    pkgs.gcc
+    pkgs.pkg-config
+    pkgs.libgcc
+    pkgs.curl
+  ];
+}
+""").strip()
+
+# -------------------- requirements.txt --------------------
+requirements = textwrap.dedent("""
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+pydantic==2.7.1
+pandas==2.2.2
+numpy==1.26.4
+joblib==1.4.2
+scikit-learn==1.4.2
+yfinance==0.2.40
+python-multipart==0.0.9
+sqlite-utils==3.36
+""").strip()
+
+# -------------------- backend/config.py --------------------
+config_py = textwrap.dedent("""
+import os
+
+APP_NAME = "AI Profit Studio"
+DATA_DIR = os.environ.get("APS_DATA_DIR", os.path.dirname(__file__))
+DB_PATH = os.environ.get("APS_DB_PATH", os.path.join(DATA_DIR, "aps.sqlite"))
+MODEL_DIR = os.environ.get("APS_MODEL_DIR", DATA_DIR)
+DEFAULT_PERIOD = os.environ.get("APS_DEFAULT_PERIOD", "1y")
+DEFAULT_INTERVAL = os.environ.get("APS_DEFAULT_INTERVAL", "1d")
+DISCLAIMER_TEXT = "Educational purposes only. Not financial advice."
+""").strip()
+
+# -------------------- backend/db.py --------------------
+db_py = textwrap.dedent("""
+import sqlite3, json, os
+from .config import DB_PATH
+
+def get_conn():
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    return sqlite3.connect(DB_PATH)
+
+def init_db():
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.executescript(
+        '''
+        CREATE TABLE IF NOT EXISTS runs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            symbol TEXT,
+            started_at TEXT,
+            finished_at TEXT,
+            model_name TEXT,
+            mae REAL,
+            r2 REAL,
+            sharpe REAL,
+            params_json TEXT
+        );
+        CREATE TABLE IF NOT EXISTS models (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            path TEXT,
+            created_at TEXT,
+            features_json TEXT,
+            symbol TEXT,
+            horizon INTEGER
+        );
+        CREATE TABLE IF NOT EXISTS predictions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            symbol TEXT,
+            ts TEXT,
+            pred_return REAL,
+            direction TEXT,
+            confidence REAL,
+            features_json TEXT,
+            model_id INTEGER
+        );
+        CREATE TABLE IF NOT EXISTS watchlists (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT
+        );
+        CREATE TABLE IF NOT EXISTS watchlist_items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            watchlist_id INTEGER,
+            symbol TEXT
+        );
+        CREATE TABLE IF NOT EXISTS datasets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            symbol TEXT,
+            period TEXT,
+            interval TEXT,
+            rows INTEGER,
+            pulled_at TEXT,
+            source TEXT
+        );
+        CREATE TABLE IF NOT EXISTS backtests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created_at TEXT,
+            params_json TEXT,
+            kpis_json TEXT
+        );
+        '''
+    )
+    conn.commit()
+    conn.close()
+
+def insert(table: str, data: dict):
+    conn = get_conn()
+    keys = ",".join(data.keys())
+    qmarks = ",".join(["?"] * len(data))
+    cur = conn.cursor()
+    cur.execute(f"INSERT INTO {table} ({keys}) VALUES ({qmarks})", list(data.values()))
+    conn.commit()
+    last_id = cur.lastrowid
+    conn.close()
+    return last_id
+
+def select(sql: str, params=()):
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(sql, params)
+    rows = cur.fetchall()
+    cols = [d[0] for d in cur.description]
+    conn.close()
+    return [dict(zip(cols, r)) for r in rows]
+""").strip()
+
+# -------------------- backend/data_utils.py --------------------
+data_utils_py = textwrap.dedent("""
+from typing import Optional, Tuple
+import pandas as pd
+import numpy as np
+import yfinance as yf
+import datetime as dt
+
+def fetch_history(ticker: str, period: str = "1y", interval: str = "1d") -> pd.DataFrame:
+    df = yf.download(ticker, period=period, interval=interval, progress=False)
+    df = df.reset_index()
+    if "Adj Close" in df.columns:
+        df = df.rename(columns={"Adj Close": "adj_close"})
+    elif "Close" in df.columns:
+        df = df.rename(columns={"Close": "adj_close"})
+    return df
+
+def from_csv(file_bytes: bytes) -> pd.DataFrame:
+    import io
+    df = pd.read_csv(io.BytesIO(file_bytes))
+    if "adj_close" not in df.columns:
+        if "Adj Close" in df.columns:
+            df = df.rename(columns={"Adj Close": "adj_close"})
+        elif "Close" in df.columns:
+            df = df.rename(columns={"Close": "adj_close"})
+        else:
+            raise ValueError("CSV must include 'adj_close' or 'Close' column.")
+    return df
+
+def ensure_datetime_index(df: pd.DataFrame) -> pd.DataFrame:
+    if "Date" in df.columns:
+        df["Date"] = pd.to_datetime(df["Date"])
+        df = df.sort_values("Date").reset_index(drop=True)
+    return df
+""").strip()
+
+# -------------------- backend/features.py --------------------
+features_py = textwrap.dedent("""
+import pandas as pd
+import numpy as np
+
+def ema(series: pd.Series, span: int) -> pd.Series:
+    return series.ewm(span=span, adjust=False).mean()
+
+def rsi(series: pd.Series, length: int = 14) -> pd.Series:
+    delta = series.diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=length).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=length).mean()
+    rs = gain / (loss + 1e-9)
+    return 100 - (100 / (1 + rs))
+
+def macd(series: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9):
+    macd_line = ema(series, fast) - ema(series, slow)
+    signal_line = ema(macd_line, signal)
+    hist = macd_line - signal_line
+    return macd_line, signal_line, hist
+
+def bollinger(series: pd.Series, window: int = 20, num_std: float = 2.0):
+    ma = series.rolling(window).mean()
+    sd = series.rolling(window).std()
+    upper = ma + num_std * sd
+    lower = ma - num_std * sd
+    return ma, upper, lower
+
+def atr(df: pd.DataFrame, length: int = 14) -> pd.Series:
+    high, low, close = df["High"], df["Low"], df["adj_close"]
+    tr1 = high - low
+    tr2 = (high - close.shift()).abs()
+    tr3 = (low - close.shift()).abs()
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+    return tr.rolling(length).mean()
+
+def engineer(df: pd.DataFrame, horizon: int = 1) -> pd.DataFrame:
+    df = df.copy()
+    price = df["adj_close"]
+    df["ret_1d"] = price.pct_change()
+    df["ret_5d"] = price.pct_change(5)
+    df["vol_10"] = df["ret_1d"].rolling(10).std()
+    df["ma_5"] = price.rolling(5).mean()
+    df["ma_20"] = price.rolling(20).mean()
+    df["ma_50"] = price.rolling(50).mean()
+    df["ema_12"] = ema(price, 12)
+    df["ema_26"] = ema(price, 26)
+    macd_line, signal_line, macd_hist = macd(price, 12, 26, 9)
+    df["macd"] = macd_line
+    df["macd_signal"] = signal_line
+    df["macd_hist"] = macd_hist
+    df["rsi_14"] = rsi(price, 14)
+    bb_ma, bb_up, bb_lo = bollinger(price, 20, 2)
+    df["bb_ma"] = bb_ma
+    df["bb_up"] = bb_up
+    df["bb_lo"] = bb_lo
+    if {"High","Low"}.issubset(df.columns):
+        df["atr_14"] = atr(df, 14)
+    else:
+        df["atr_14"] = np.nan
+    df["dow"] = pd.to_datetime(df.get("Date", pd.Timestamp.today())).dt.dayofweek
+    # Target: forward return next horizon bars
+    df["target_return"] = df["adj_close"].shift(-horizon) / df["adj_close"] - 1.0
+    df = df.dropna().reset_index(drop=True)
+    # Select numeric feature columns
+    features = [c for c in df.columns if c not in ("target_return","Date")]
+    return df[features + ["target_return"]]
+""").strip()
+
+# -------------------- backend/models.py --------------------
+models_py = textwrap.dedent("""
+import os, time, json
+import numpy as np
+import pandas as pd
+from typing import Dict, Tuple
+from sklearn.model_selection import TimeSeriesSplit
+from sklearn.metrics import mean_absolute_error, r2_score
+from sklearn.ensemble import RandomForestRegressor
+import joblib
+
+from .config import MODEL_DIR
+
+try:
+    from lightgbm import LGBMRegressor
+    HAS_LGBM = True
+except Exception:
+    HAS_LGBM = False
+
+MODEL_PATH = os.path.join(MODEL_DIR, "best_model.joblib")
+
+def train_and_select(X: pd.DataFrame, y: pd.Series, candidates=None, splits: int = 5) -> Dict:
+    if candidates is None:
+        candidates = ["rf"] + (["lgbm"] if HAS_LGBM else [])
+    tscv = TimeSeriesSplit(n_splits=min(splits, max(2, len(X)//50)))
+    best = None
+
+    for name in candidates:
+        if name == "rf":
+            model = RandomForestRegressor(n_estimators=200, random_state=42)
+        elif name == "lgbm" and HAS_LGBM:
+            model = LGBMRegressor(random_state=42)
+        else:
+            continue
+        maes, r2s = [], []
+        for tr_idx, te_idx in tscv.split(X):
+            X_tr, X_te = X.iloc[tr_idx], X.iloc[te_idx]
+            y_tr, y_te = y.iloc[tr_idx], y.iloc[te_idx]
+            model.fit(X_tr, y_tr)
+            preds = model.predict(X_te)
+            maes.append(mean_absolute_error(y_te, preds))
+            r2s.append(r2_score(y_te, preds))
+        score = float(np.mean(maes))
+        r2avg = float(np.mean(r2s))
+        if (best is None) or (score < best["mae"]):
+            best = {"name": name, "mae": score, "r2": r2avg, "model": model}
+
+    # retrain best on full data
+    best["model"].fit(X, y)
+    payload = {"model": best["model"], "columns": list(X.columns), "meta": {"algo": best["name"]}}
+    joblib.dump(payload, MODEL_PATH)
+    return {"algo": best["name"], "mae": best["mae"], "r2": best["r2"], "path": MODEL_PATH}
+
+def load_model():
+    payload = joblib.load(MODEL_PATH)
+    return payload["model"], payload["columns"], payload.get("meta", {})
+""").strip()
+
+# -------------------- backend/signals.py --------------------
+signals_py = textwrap.dedent("""
+import numpy as np
+import pandas as pd
+
+def rank_signals(df_feat: pd.DataFrame, preds: np.ndarray) -> pd.Series:
+    # A simple composite score using z-scores of selected indicators + model pred
+    z = lambda s: (s - s.mean()) / (s.std() + 1e-9)
+    score = 0.0
+    if "macd_hist" in df_feat.columns:
+        score = score + z(df_feat["macd_hist"])
+    if "rsi_14" in df_feat.columns:
+        score = score + z(df_feat["rsi_14"].diff().fillna(0))
+    if "ret_5d" in df_feat.columns:
+        score = score + z(df_feat["ret_5d"])
+    score = score + z(pd.Series(preds, index=df_feat.index))
+    return score
+""").strip()
+
+# -------------------- backend/backtest.py --------------------
+backtest_py = textwrap.dedent("""
+import numpy as np
+import pandas as pd
+
+def equity_curve(returns: pd.Series, start_equity: float = 1.0) -> pd.Series:
+    eq = (1.0 + returns.fillna(0)).cumprod() * start_equity
+    return eq
+
+def kpis(returns: pd.Series, freq_per_year: int = 252, cost_bps: float = 0.0) -> dict:
+    r = returns.fillna(0) - (cost_bps/10000.0)
+    mu = r.mean() * freq_per_year
+    sd = r.std() * np.sqrt(freq_per_year) + 1e-12
+    sharpe = mu / sd
+    eq = equity_curve(r)
+    roll_max = eq.cummax()
+    dd = (eq / roll_max) - 1.0
+    maxdd = dd.min()
+    wins = (r > 0).sum()
+    winrate = wins / max(1, len(r))
+    return {
+        "sharpe": float(sharpe),
+        "max_drawdown": float(maxdd),
+        "win_rate": float(winrate),
+        "avg_return": float(r.mean())
+    }
+
+def walk_forward(df_feat: pd.DataFrame, target_col: str = "target_return",
+                 train_win: int = 200, test_win: int = 20) -> dict:
+    """
+    Simple rolling backtest: train on rolling window, test next window using a baseline rule:
+    long if predicted return > 0 else flat.
+    (Model fitting handled externally; here we just simulate with provided target for demo.)
+    """
+    rets = []
+    for start in range(0, len(df_feat) - train_win - test_win, test_win):
+        test_slice = df_feat.iloc[start + train_win : start + train_win + test_win]
+        # Perfect-foresight baseline (NOT for real use) replaced with naive momentum proxy:
+        # Use sign of ret_1d as dumb predictor for demo if model preds are not provided.
+        pred = np.sign(test_slice["ret_1d"].fillna(0))
+        trade_ret = pred * test_slice[target_col]
+        rets.append(trade_ret)
+    if not rets:
+        return {"equity": [], "kpis": {"sharpe": 0, "max_drawdown": 0, "win_rate": 0, "avg_return": 0}}
+    all_rets = pd.concat(rets)
+    eq = list((1 + all_rets).cumprod().values)
+    return {"equity": eq, "kpis": kpis(all_rets)}
+""").strip()
+
+# -------------------- backend/main.py --------------------
+main_py = textwrap.dedent("""
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+import pandas as pd
+import numpy as np
+import time, json, datetime as dt
+
+from .config import APP_NAME, DISCLAIMER_TEXT, DEFAULT_PERIOD, DEFAULT_INTERVAL
+from . import db
+from .data_utils import fetch_history, from_csv, ensure_datetime_index
+from .features import engineer
+from .models import train_and_select, load_model
+from .backtest import walk_forward
+from .signals import rank_signals
+
+app = FastAPI(title=APP_NAME)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+db.init_db()
+
+class PredictRequest(BaseModel):
+    features: dict | None = None
+    auto_latest: bool = True
+    symbol: str | None = None
+
+@app.get("/health")
+def health():
+    return {"status": "ok", "app": APP_NAME, "disclaimer": DISCLAIMER_TEXT}
+
+@app.get("/data/fetch")
+def data_fetch(ticker: str, period: str = DEFAULT_PERIOD, interval: str = DEFAULT_INTERVAL):
+    df = fetch_history(ticker, period=period, interval=interval)
+    df = ensure_datetime_index(df)
+    db.insert("datasets", {
+        "symbol": ticker, "period": period, "interval": interval,
+        "rows": len(df), "pulled_at": dt.datetime.utcnow().isoformat(), "source": "yfinance"
+    })
+    return {"symbol": ticker, "rows": len(df), "columns": list(df.columns)}
+
+@app.post("/data/upload_csv")
+async def data_upload_csv(file: UploadFile = File(...)):
+    contents = await file.read()
+    df = from_csv(contents)
+    df = ensure_datetime_index(df)
+    return {"rows": len(df), "columns": list(df.columns)}
+
+@app.post("/train")
+async def train(ticker: str = Form(None), horizon: int = Form(1), period: str = Form(DEFAULT_PERIOD)):
+    started = dt.datetime.utcnow().isoformat()
+    if not ticker:
+        raise HTTPException(400, "ticker required (CSV mode via /data/upload_csv is separate).")
+    df = fetch_history(ticker, period=period)
+    df = ensure_datetime_index(df)
+    feats = engineer(df, horizon=int(horizon))
+    X = feats.drop(columns=["target_return"])
+    y = feats["target_return"]
+    result = train_and_select(X, y)
+    finished = dt.datetime.utcnow().isoformat()
+    db.insert("runs", {
+        "symbol": ticker, "started_at": started, "finished_at": finished,
+        "model_name": result["algo"], "mae": result["mae"], "r2": result["r2"],
+        "sharpe": None, "params_json": json.dumps({"horizon": horizon, "period": period})
+    })
+    return {"status": "trained", "metrics": result, "n_rows": len(feats)}
+
+@app.get("/metrics/last")
+def metrics_last():
+    rows = db.select("SELECT * FROM runs ORDER BY id DESC LIMIT 1")
+    if not rows:
+        return {"exists": False}
+    r = rows[0]
+    return {"exists": True, "metrics": {"mae": r["mae"], "r2": r["r2"], "algo": r["model_name"]}, "run": r}
+
+@app.post("/predict")
+def predict(req: PredictRequest):
+    model, columns, meta = load_model()
+    # If auto_latest and symbol provided, fetch latest and engineer one row of features
+    feats_dict = req.features
+    if req.auto_latest and req.symbol:
+        df = fetch_history(req.symbol, period="3mo", interval="1d")
+        df = ensure_datetime_index(df)
+        feats = engineer(df)
+        latest = feats.drop(columns=["target_return"]).iloc[-1]
+        feats_dict = latest.to_dict()
+    if feats_dict is None:
+        raise HTTPException(400, "Provide features or set auto_latest with a symbol.")
+    x = np.array([[feats_dict.get(c, 0.0) for c in columns]])
+    pred = float(model.predict(x)[0])
+    direction = "up" if pred > 0 else "down"
+    confidence = min(0.99, abs(pred) * 10)
+    ts = dt.datetime.utcnow().isoformat()
+    db.insert("predictions", {
+        "symbol": req.symbol or "N/A",
+        "ts": ts,
+        "pred_return": pred,
+        "direction": direction,
+        "confidence": confidence,
+        "features_json": json.dumps(feats_dict),
+        "model_id": None
+    })
+    return {"predicted_return": pred, "direction": direction, "confidence": confidence, "timestamp": ts}
+
+@app.post("/backtest")
+def backtest(ticker: str, horizon: int = 1):
+    df = fetch_history(ticker, period="2y", interval="1d")
+    df = ensure_datetime_index(df)
+    feats = engineer(df, horizon=horizon)
+    result = walk_forward(feats, train_win=200, test_win=20)
+    db.insert("backtests", {"created_at": dt.datetime.utcnow().isoformat(),
+                            "params_json": json.dumps({"ticker": ticker, "horizon": horizon}),
+                            "kpis_json": json

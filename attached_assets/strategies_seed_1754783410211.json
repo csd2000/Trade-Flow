@@ -1,0 +1,347 @@
+{
+  "strategies": [
+    {
+      "id": 1,
+      "slug": "all-trading-strategies-unified",
+      "title": "ALL Trading Strategies \u2014 Unified",
+      "category": "Education",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "hub",
+        "presets"
+      ],
+      "summary": "Launchpad for every preset.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 2,
+      "slug": "passive-income-training",
+      "title": "Passive Income Training",
+      "category": "DeFi",
+      "risk": "Low",
+      "roi_range": "4\u201340% APY",
+      "tags": [
+        "defi",
+        "yield"
+      ],
+      "summary": "DeFi income, vaults, LPs, auto-compound.",
+      "track_id": "passive-income-training",
+      "first_module_slug": "passive-income-module-1"
+    },
+    {
+      "id": 3,
+      "slug": "oliver-velez-techniques",
+      "title": "Oliver Velez Techniques",
+      "category": "Day",
+      "risk": "Medium",
+      "roi_range": null,
+      "tags": [
+        "price-action",
+        "pro"
+      ],
+      "summary": "Classic professional entries/exits.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 4,
+      "slug": "fc-intelligent-decision",
+      "title": "F&C Intelligent Decision Strategy",
+      "category": "Swing",
+      "risk": "Medium",
+      "roi_range": null,
+      "tags": [
+        "ai",
+        "risk"
+      ],
+      "summary": "AI-filtered entries/exits.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 5,
+      "slug": "trading-freedom-group",
+      "title": "Trading Freedom Group",
+      "category": "Education",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "community",
+        "signals"
+      ],
+      "summary": "Community signals & playbooks.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 6,
+      "slug": "defi-strategist-elite-dashboard",
+      "title": "DeFi Strategist Elite Dashboard",
+      "category": "Education",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "dashboard"
+      ],
+      "summary": "All metrics in one view.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 7,
+      "slug": "mindful-study-platform",
+      "title": "Mindful Study Education Platform",
+      "category": "Education",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "mindset"
+      ],
+      "summary": "Discipline, checklists, routines.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 8,
+      "slug": "live-crypto-cashflow-challenge",
+      "title": "LIVE Crypto Cashflow Challenge",
+      "category": "DeFi",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "challenge",
+        "defi"
+      ],
+      "summary": "30-day yield challenge.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 9,
+      "slug": "consolidated-crypto-hub",
+      "title": "Consolidated Crypto Hub",
+      "category": "Education",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "hub"
+      ],
+      "summary": "All tools unified.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 10,
+      "slug": "protocols",
+      "title": "Protocols",
+      "category": "DeFi",
+      "risk": "Medium",
+      "roi_range": null,
+      "tags": [
+        "catalog"
+      ],
+      "summary": "Explore Aave, Curve, GMX, etc.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 11,
+      "slug": "strategy-builder",
+      "title": "Strategy Builder",
+      "category": "Education",
+      "risk": "Medium",
+      "roi_range": null,
+      "tags": [
+        "builder"
+      ],
+      "summary": "Wizard: market\u2192rules\u2192risk\u2192automate.",
+      "track_id": "strategy-builder-training",
+      "first_module_slug": "strategy-builder-module-1"
+    },
+    {
+      "id": 12,
+      "slug": "portfolio",
+      "title": "Portfolio",
+      "category": "Education",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "portfolio"
+      ],
+      "summary": "Positions, PnL, allocations.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 13,
+      "slug": "profit-taking",
+      "title": "Profit Taking",
+      "category": "Education",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "exits"
+      ],
+      "summary": "Ladders, time-DCA, ATR trail.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 14,
+      "slug": "exit-strategy",
+      "title": "Exit Strategy",
+      "category": "Education",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "exits",
+        "alerts"
+      ],
+      "summary": "Full bull-run exit presets + alerts.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 15,
+      "slug": "learn-defi",
+      "title": "Learn DeFi",
+      "category": "DeFi",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "education"
+      ],
+      "summary": "LPs, IL, bridges, audits.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 16,
+      "slug": "stablecoin-guide",
+      "title": "Stablecoin Guide",
+      "category": "DeFi",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "stable"
+      ],
+      "summary": "DAI/USDC/USDT/LUSD risk/yield.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 17,
+      "slug": "robinhood-trading",
+      "title": "Robin Hood Trading",
+      "category": "Education",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "onramp"
+      ],
+      "summary": "CeFi on-ramp, compare fees.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 18,
+      "slug": "defi-safety-system",
+      "title": "DeFi Safety System",
+      "category": "DeFi",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "safety"
+      ],
+      "summary": "Revoke, rug-check, approvals.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 19,
+      "slug": "project-discovery",
+      "title": "Project Discovery",
+      "category": "Alpha",
+      "risk": "High",
+      "roi_range": null,
+      "tags": [
+        "discovery"
+      ],
+      "summary": "New tokens, airdrops, narratives.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 20,
+      "slug": "yield-pools",
+      "title": "Yield Pools",
+      "category": "DeFi",
+      "risk": "Medium",
+      "roi_range": null,
+      "tags": [
+        "yield"
+      ],
+      "summary": "Compare APY/TVL live.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 21,
+      "slug": "30secondtrader",
+      "title": "30SecondTrader",
+      "category": "Day",
+      "risk": "High",
+      "roi_range": null,
+      "tags": [
+        "quick"
+      ],
+      "summary": "Fast setups under 30s.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 22,
+      "slug": "warrior-trading",
+      "title": "Warrior Trading",
+      "category": "Day",
+      "risk": "High",
+      "roi_range": null,
+      "tags": [
+        "perps"
+      ],
+      "summary": "Leverage/perps presets.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 23,
+      "slug": "nancy-pelosi-strategy",
+      "title": "Nancy Pelosi Strategy",
+      "category": "Swing",
+      "risk": "Medium",
+      "roi_range": null,
+      "tags": [
+        "news"
+      ],
+      "summary": "News-based 'smart money' tracking.",
+      "track_id": null,
+      "first_module_slug": null
+    },
+    {
+      "id": 24,
+      "slug": "economic-calendar",
+      "title": "Economic Calendar",
+      "category": "Education",
+      "risk": "Low",
+      "roi_range": null,
+      "tags": [
+        "calendar"
+      ],
+      "summary": "CPI, FOMC, ETF, unlocks.",
+      "track_id": null,
+      "first_module_slug": null
+    }
+  ]
+}

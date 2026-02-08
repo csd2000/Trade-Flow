@@ -1,0 +1,85 @@
+[
+  {
+    "id": "curve-dai-usdc",
+    "name": "Curve DAI/USDC LP + Convex",
+    "slug": "curve-dai-usdc",
+    "chain": "Ethereum",
+    "risk": "Low",
+    "roi_range": "4\u201312% APY",
+    "platform": "Curve + Convex",
+    "network": "Ethereum",
+    "tools": [
+      "Curve.fi",
+      "ConvexFinance",
+      "MetaMask"
+    ],
+    "steps": [
+      "Install MetaMask and fund your wallet with ETH.",
+      "Go to curve.fi and select the DAI/USDC pool.",
+      "Deposit equal amounts of DAI and USDC.",
+      "Stake LP tokens on ConvexFinance.com for boosted yield.",
+      "Track your yield on both Curve and Convex dashboards."
+    ],
+    "exit_plan": [
+      "Unstake from Convex.",
+      "Remove liquidity from Curve.",
+      "Convert back to DAI/USDC.",
+      "Bridge to fiat or CeFi wallet (e.g. Coinbase)."
+    ],
+    "risks": [
+      "Impermanent loss (minimal for stables)",
+      "Smart contract risk",
+      "Platform updates (check weekly)"
+    ],
+    "video_url": "https://www.youtube.com/watch?v=example1",
+    "guide_url": "https://example.com/curve-guide.pdf",
+    "audit_url": "https://defisafety.com/app/project/curve",
+    "tags": [
+      "stablecoins",
+      "lp",
+      "low-risk"
+    ],
+    "created_at": "2025-07-18T22:51:17.859973"
+  },
+  {
+    "id": "beefy-usdt-busd",
+    "name": "Auto-Compounding Vault (Beefy USDT-BUSD)",
+    "slug": "beefy-usdt-busd",
+    "chain": "BNB Chain",
+    "risk": "Medium",
+    "roi_range": "20\u201340% APY",
+    "platform": "Beefy Finance",
+    "network": "BNB Chain",
+    "tools": [
+      "Beefy Finance",
+      "MetaMask",
+      "Binance"
+    ],
+    "steps": [
+      "Add BNB Chain to MetaMask.",
+      "Swap to USDT and BUSD using PancakeSwap.",
+      "Deposit into Beefy's USDT-BUSD LP vault.",
+      "Enable auto-compounding.",
+      "Track your vault's growth on Beefy dashboard."
+    ],
+    "exit_plan": [
+      "Withdraw from Beefy vault.",
+      "Unzap LP into USDT and BUSD.",
+      "Send funds to Binance or bridge to Ethereum for fiat."
+    ],
+    "risks": [
+      "Impermanent loss",
+      "Smart contract vulnerabilities",
+      "High gas fees during peak times"
+    ],
+    "video_url": "https://www.youtube.com/watch?v=example2",
+    "guide_url": "https://example.com/beefy-guide.pdf",
+    "audit_url": "https://defisafety.com/app/project/beefy-finance",
+    "tags": [
+      "auto-compound",
+      "bnb-chain",
+      "medium-risk"
+    ],
+    "created_at": "2025-07-18T22:51:17.859984"
+  }
+]

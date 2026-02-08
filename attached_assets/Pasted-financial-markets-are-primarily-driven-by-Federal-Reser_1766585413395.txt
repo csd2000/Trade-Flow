@@ -1,0 +1,18 @@
+financial markets are primarily driven by Federal Reserve policy shifts, persistent inflation concerns, and the fallout from major geopolitical and domestic policy shocks (such as tariffs and government shutdowns). 
+1. Most Impactful Data (Common Factors)
+Federal Reserve Decisions: The Fed's shift to an easing cycle is the dominant force. A quarter-point rate cut on December 10, 2025, brought the benchmark rate to 3.50%–3.75%. Markets are highly sensitive to whether these are "insurance cuts" or the start of a deep cycle.
+Inflation (CPI/PCE): Inflation remains sticky in the upper-2% area, preventing more aggressive rate cuts. In 2025, Bitcoin has shown a high 0.8 correlation with inflation data, functioning increasingly as a macroeconomic risk asset.
+Employment Data (NFP): While hiring has moderated, the Fed is closely watching for "labor market softness" to justify further cuts in early 2026. 
+2. Market-Specific Drivers
+Forex:
+Geopolitics & Trade: The "Liberation Day" tariff announcements and potential devaluation of the Chinese yuan due to U.S. import tariffs are major volatility drivers.
+Domestic Policies: The longest government shutdown in U.S. history in late 2025 created massive data gaps, forcing traders to rely on alternative sentiment indicators.
+Stock Market:
+AI Infrastructure Spending: Capital outlays for AI remain a primary engine for GDP; however, extreme valuations in the "Magnificent Seven" have made the S&P 500 vulnerable to any earnings misses in this sector.
+Regulatory Legislation: The passage of the CLARITY Act and GENIUS Act has significantly impacted crypto-related stocks.
+Cryptocurrency:
+Institutional Adoption: The rise of Spot ETFs and the U.S. government’s formalization of a Strategic Bitcoin Reserve (holding over 200,000 BTC) have deeply linked crypto prices to traditional financial cycles.
+Liquidity Vacuums: Despite early 2025 highs, a massive end-of-year "liquidity vacuum" saw over $1.2 trillion in market value erased in late 2025 as leverage was wiped out. 
+3. Current Market Sentiment (December 2025)
+Crypto Fear & Greed Index: Currently stands at 24 ("Extreme Fear"), reflecting eroded confidence following sharp year-end retreats.
+Asset Correlation: Bitcoin's correlation with the S&P 500 has risen to 0.5 (up from 0.29 in 2024), meaning it now moves much more in sync with traditional risk-on/risk-off cycles. 

@@ -1,0 +1,59 @@
+To transform your trading app into a professional-grade "Command Center," use the master prompt below.
+
+The Replit Agent works best when you give it a clear Architecture & Workflow. Copy and paste the following into the Replit Agent to build the features we discussed.
+
+The Replit Agent Master Prompt
+Role: You are an expert Full-Stack Financial Engineer. Project Goal: Enhance my current trading app into a "Smart Money Command Center" that integrates real-time Whale Alerts, Breaking News, and AI-driven sentiment analysis.
+
+1. Technical Stack:
+
+Backend: Python (FastAPI) or Node.js (Express).
+
+Frontend: React with Tailwind CSS (Dark/Modern "Bloomberg" aesthetic).
+
+Database: Replit DB or SQLite for logging trade alerts and history.
+
+APIs to integrate: * Whale Alert API: For transactions > $10M.
+
+CryptoPanic API: For aggregated breaking news and sentiment.
+
+OpenAI/Gemini API: To act as the "Lead Alpha Analyst" and filter the noise.
+
+2. Core Features to Build:
+
+Whale Stream: A real-time feed of large on-chain moves. Color-code them: Red for "Wallet to Exchange" (Sell risk), Green for "Exchange to Wallet" (Accumulation).
+
+News Ticker: A scrolling or list-based feed of breaking news filtered by "High Impact" keywords (SEC, Fed, Hack, ETF).
+
+AI Analysis Panel: A window where the AI uses the "Lead Alpha Analyst" framework to summarize the last hour of data and provide a "Volatility Confidence Score" (1-10).
+
+The Daily Checklist (Printable): A specific page or modal with a "Print" button that displays my daily trading routine, risk management rules, and a space for handwritten notes.
+
+Position Sizer Tool: A simple calculator where I input my balance, risk %, and stop-loss price to get my exact position size.
+
+3. Design Requirements:
+
+Use a high-contrast dark mode (Midnight black/Slate gray).
+
+Priority on scannability: use bold colors (Electric Green for buys, Neon Red for sells).
+
+Mobile-responsive so I can check alerts on the go.
+
+4. Initial Task:
+
+Start by setting up the dashboard layout and the API connections for Whale Alert and CryptoPanic. Use placeholders for the API keys in the Secrets tool.
+
+How to Deploy This (Step-by-Step)
+Open Replit: Click "Create Repl" and select "Replit Agent."
+
+Paste the Prompt: Paste the text above and hit enter.
+
+Add Your Secrets: The Agent will ask for API keys. Go to the "Secrets" (padlock icon) in the sidebar and add:
+
+WHALE_ALERT_API_KEY: Get it from Whale Alert Dev Portal.
+
+CRYPTOPANIC_API_KEY: Get it from CryptoPanic.
+
+OPENAI_API_KEY: For the "Analyst" logic.
+
+Iterate: Once the base app is built, tell the agent: "Now add a 'Print' button to the Daily Checklist page so I can print it every morning."

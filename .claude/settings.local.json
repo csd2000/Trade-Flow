@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm:*)",
+      "Bash(curl:*)",
+      "Bash(pkill:*)",
+      "Bash(xargs kill -9)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(npm run check:*)",
+      "Bash(npm run db:push:*)",
+      "Bash(yes:*)",
+      "Bash(timeout 60 npm run db:push:*)",
+      "Bash(npx tsx:*)",
+      "Bash(grep:*)",
+      "Bash(timeout 30 npm run dev:*)",
+      "Bash(npx tsc:*)",
+      "Bash(timeout 25 npm run dev:*)",
+      "Bash(npm run build:*)",
+      "Bash(printf:*)",
+      "Bash(npx drizzle-kit push:*)",
+      "Bash(npx drizzle-kit:*)",
+      "Bash(psql:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

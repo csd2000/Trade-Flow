@@ -1,0 +1,47 @@
+This is the Master System Architecture and Replit Backend Prompt. It consolidates your 200/9/21 EMA strategy, the MACD-Candle color synchronization, the unique audio exit system, and global macro-economic confluence.
+🏛️ System Placement: The "Intelligence Hub"
+Integrate this into your Replit app under a new module called HF_Confluence_Scanner. It should sit "above" your execution logic to act as a high-probability filter.
+📥 The "Master Pump" Architecture
+1. The Entry Filter (The "Confluence Gate")
+An asset only appears on your "Hot List" when:
+ * Long-Term Trend: Price is above the 200 EMA.
+ * Momentum Shift: 9 EMA crosses above the 21 EMA.
+ * Visual Agreement: The Candle is Green AND the MACD Histogram is > 0 and increasing.
+ * Macro Context: * Forex: Current DXY trend is bearish (if trading XXX/USD).
+   * Penny Stocks: Relative Volume (RVOL) > 2.0 + Positive News Sentiment score.
+   * Crypto/Futures: Aggregate Order Flow is Net Positive.
+ * 🔊 Sound: Play entry_alert.mp3.
+2. The Dynamic Exit (The "Mismatch" Logic)
+This is your specialized exit rule to lock in profits before the trend reverses:
+ * Trigger: If (Candle Color == Red) OR (MACD Histogram < Previous MACD Histogram).
+ * Condition: This only triggers after an Entry signal has been confirmed.
+ * 🔊 Sound: Play exit_warning.mp3 (A distinct, lower-frequency tone).
+💻 Replit Backend Prompt (Copy & Paste this into your Replit AI)
+> "Write a Python script for a real-time trading scanner using pandas_ta for indicators and ccxt (Crypto) or yfinance (Stocks/Forex).
+> Technical Rules:
+>  * Calculate EMA 9, 21, and 200. Identify 'Golden Cross' (9 over 21) while price > 200.
+>  * Calculate MACD (12, 26, 9).
+>  * Monitor Candle Color: (Close > Open = Green).
+> Alert Logic:
+>  * If 9EMA > 21EMA AND Price > 200EMA AND Candle == Green AND MACD > Previous_MACD: Trigger 'ENTRY' signal and play sounds/entry.wav.
+>  * If Position == Open AND (Candle == Red OR MACD < Previous_MACD): Trigger 'EXIT' signal and play sounds/exit.wav.
+> Macro Integration:
+>  * Add a function to scrape FinancialModelingPrep API for 'Macroeconomic' news. Filter assets by sentiment score > 0.5 for longs.
+> UI:
+>  * Create a dropdown to select Asset Class: [Forex, Crypto, Stocks, Futures].
+>  * Create a dropdown for Timeframes: [1m, 5m, 15m, 1h].
+>  * Ensure the scanner refreshes every candle close."
+> 
+🌍 Global Confluence Matrix
+| Asset Class | Macro Tool | News Trigger |
+|---|---|---|
+| Forex | DXY Index / Fed Rates | CPI Data / NFP Reports |
+| Crypto | BTC Dominance / ETH Gas | Regulatory News / Exchange Inflows |
+| Stocks | Sector Heatmap | Earnings / FDA Approvals (Pennies) |
+| Futures | Yield Curve / Gold | Geopolitical Tensions |
+🚀 Next Step
+Would you like me to provide the specific folder structure and the two sound files (coded as base64) so you can get the audio working immediately in Replit?
+Build a Python MACD Zero Cross Strategy
+This video provides a practical walkthrough on coding a MACD-based strategy in Python, which is a foundational component of your custom entry and exit logic.
+
+YouTube video views will be stored in your YouTube History, and your data will be stored and used by YouTube according to its Terms of Service

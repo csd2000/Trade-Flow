@@ -1,0 +1,104 @@
+ChatGPT said:
+
+Thought for 10s
+Awesome — I just generated complete, print-ready training content for all 24 strategies (8 modules each, 192 total) and the mapping to wire every “Start Training” button to the correct first module.
+
+📦 Downloads
+
+Master training DB (24 tracks × 8 modules):
+trade_ninja_master_training_v4.json
+
+Strategy ↔ training link mappings (JSON):
+strategies_training_links_v4.json
+
+Strategy ↔ training link mappings (SQL upsert):
+strategies_training_links_v4.sql
+
+Each module includes:
+
+Overview ≥ 80 characters (clear, paragraph-style)
+
+6 explicit, actionable steps
+
+Prerequisites, notes prompt
+
+Duration, order, slug, track
+
+Ready to seed into Supabase and render now
+
+Paste this to Replit (so they actually wire it up)
+Objective: Import the attached V4 content, link all 24 strategies to their first modules, and confirm every module renders with full step-by-step text. No placeholders.
+
+1) Seed modules & tracks
+Place trade_ninja_master_training_v4.json in your repo under /data/.
+
+Use the existing seed route (or create one) to upsert:
+
+training_tracks(track_id, title)
+
+training_modules(...) for all modules in each track.
+
+(Ping me if you need the seed route again; I’ve provided one earlier.)
+
+2) Link all strategy cards
+Run the SQL in Supabase:
+
+strategies_training_links_v4.sql
+
+This sets track_id and first_module_slug for all 24 slugs:
+
+Example:
+fc-intelligent-decision → fc-intelligent-training / fc-intelligent-module-1
+profit-taking → profit-taking-training / profit-taking-module-1
+…and so on for the full set.
+
+3) Ensure routing & pages
+Card click →
+
+ts
+Copy
+Edit
+const href = track_id && first_module_slug
+  ? `/academy/module/${track_id}/${first_module_slug}`
+  : `/academy`;
+router.push(href);
+Module page /academy/module/[track]/[slug] renders:
+
+Overview, Prerequisites, Steps, Notes, Resources, Additional Resources
+
+Prev / Next; Back to Strategies (no freezes)
+
+Print button with clean print CSS
+
+4) Admin & CMS
+/admin (email-gated) can override any module at path:
+/academy/module/{track_id}/{module_slug}
+
+Public module reads CMS override first, then DB fallback.
+
+5) Verification (must pass)
+sql
+Copy
+Edit
+-- 24 strategies must have links:
+select count(*) from public.strategies
+where track_id is not null and first_module_slug is not null;  -- expect 24
+
+-- 8 modules per track:
+select track_id, count(*) from public.training_modules
+group by track_id having count(*) <> 8;  -- expect zero rows
+
+-- Overviews have real depth:
+select track_id, slug from public.training_modules
+where length(coalesce(overview,'')) < 80;  -- expect zero rows
+
+-- Steps are complete:
+select track_id, slug from public.training_modules
+where jsonb_array_length(steps) < 5;  -- expect zero rows
+If you want, I can also:
+
+Inject PDF download links into each module’s resources.pdf (and bundle all PDFs again), or
+
+Add a /training-system-test page that shows PASS/FAIL for the checks above in one place.
+
+Want me to wire the PDFs + add the test page next? 

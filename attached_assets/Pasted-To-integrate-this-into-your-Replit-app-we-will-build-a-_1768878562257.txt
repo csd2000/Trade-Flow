@@ -1,0 +1,54 @@
+To integrate this into your Replit app, we will build a Trend Strength Engine that calculates a normalized value between -100 (Strong Bearish) and +100 (Strong Bullish).
+
+Following your custom instructions for the 7-Gate system, I have prioritized Liquidity Sweeps as the primary trigger. In this model, the bar won't just move based on math; it will "charge up" when price sweeps a major high or low, as that usually precedes the strongest trend moves.
+
+The Master Logic (The "Prompt" for your Logic Layer)
+Python
+
+# Trend Strength Logic for Replit Backend
+def calculate_trend_strength(data):
+    # GATE 1: PRIMARY TRIGGER - Liquidity Sweep (High Priority)
+    # Check if current candle took out previous session high/low and reversed
+    sweep_bullish = check_liquidity_sweep(data, 'low') # Price swept liquidity below
+    sweep_bearish = check_liquidity_sweep(data, 'high') # Price swept liquidity above
+
+    # GATE 2-7: Momentum & Trend Confirmation
+    adx = calculate_adx(data)      # Trend Intensity (0-100)
+    rsi = calculate_rsi(data)      # Momentum
+    ema_cross = check_ema_cross()   # Directional bias
+
+    # WEIGHTING SYSTEM
+    score = 0
+    if sweep_bullish: score += 50  # Liquidity sweep gives immediate high weight
+    if sweep_bearish: score -= 50
+    
+    # Scale the ADX intensity into the score
+    intensity = (adx / 100) * 50 
+    
+    final_value = score + (intensity if score > 0 else -intensity)
+    return clamp(final_value, -100, 100)
+The UI Visuals (How to make it look)
+For a professional trading app look, avoid a simple solid bar. Instead, use a Segmented Heatmap:
+
+The Midpoint: A white or glowing "Zero" line.
+
+The Blocks: Use 5 vertical segments on each side.
+
+Level 1-2: Dull color (Dark Red/Dark Green).
+
+Level 3-4: Bright color (Red/Green).
+
+Level 5 (The "Sweep" Zone): Neon Glow. This only lights up when a Liquidity Sweep is detected, signaling the highest probability entry.
+
+Real-Time Update: The bar should "pulse" or flicker slightly when the ADX is rising, indicating the trend is actively gaining strength.
+
+The App Master Prompt (Update for Replit)
+You can copy and paste this into your system instructions to update your app's behavior:
+
+System Instruction Update: "Prioritize the 7-Gate System for trend analysis. The primary trigger for the Trend Strength Bar is a Liquidity Sweep (Session High/Low or Swing High/Low).
+
+If a Bullish Sweep occurs: Initialize bar at +50 and add intensity based on ADX/RSI.
+
+If a Bearish Sweep occurs: Initialize bar at -50 and subtract intensity based on ADX/RSI.
+
+The UI component must be a bi-directional horizontal bar, segmented into 10 total units, using a color gradient from Red (-100) to Green (+100) with a neutral center."

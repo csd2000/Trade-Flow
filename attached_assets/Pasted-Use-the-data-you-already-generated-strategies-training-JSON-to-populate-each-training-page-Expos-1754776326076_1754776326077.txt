@@ -1,0 +1,321 @@
+Use the data you already generated (strategies/training JSON) to populate each training page.
+
+Expose that data via an API (/api/training/[slug]) so pages can fetch consistent, versioned content.
+
+Render a standard module template with these sections:
+
+Title, duration, progress (Module X of Y)
+
+Overview & Prerequisites
+
+Content (step-by-step)
+
+Notes (user notes text area)
+
+Resources (Video / PDF / Community)
+
+Additional Resources (optional)
+
+Prev / Next navigation
+
+Print/Save PDF button
+
+Start with Module 1 (Overview & Prerequisites) for “Passive Income Training (DeFi)” and connect the “Next Module” link to your next lesson route.
+
+1) Data source (JSON) — put in your project (e.g., /data/training_modules.json)
+This uses the content you/We already wrote. You can add other modules later—just append to modules[].
+
+json
+Copy
+Edit
+{
+  "modules": [
+    {
+      "slug": "passive-income-module-1",
+      "track": "passive-income-training",
+      "order": 1,
+      "of": 8,
+      "title": "Module 1: Overview & Prerequisites",
+      "duration": "15 minutes",
+      "overview": "Earn yield using stable LPs, lending, and auto-compounding vaults. This module orients you to safe venues, the wallet setup, and the exact prerequisites before depositing.",
+      "prerequisites": [
+        "Install MetaMask (or WalletConnect-compatible wallet).",
+        "Fund gas on the target chain (ETH on Ethereum, MATIC on Polygon, BNB on BNB Chain).",
+        "Have a small test amount ready (e.g., $50–$100) for first deposit.",
+        "Bookmark the protocols you plan to use (e.g., Aave, Curve, Beefy)."
+      ],
+      "steps": [
+        "Open DeFi Hub → Passive Income.",
+        "Pick a chain (Ethereum, Polygon, or BNB Chain).",
+        "Select one conservative strategy (e.g., Aave USDC lending or Curve DAI/USDC LP).",
+        "Click “View Steps” to expand the deposit guide.",
+        "Approve the token (one-time) then deposit a small test amount.",
+        "Enable auto-compound (if available) and confirm in your wallet.",
+        "Write down the protocol URL, deposit date, expected APY, and risks in your notes."
+      ],
+      "notes_prompt": "Record your funding source, gas cost, and which protocol you deposited into. Add any questions for the next module.",
+      "resources": {
+        "video": {
+          "label": "Watch Video",
+          "url": "https://example.com/passive-income-module-1-video"
+        },
+        "pdf": {
+          "label": "Download PDF",
+          "url": "https://example.com/passive-income-module-1-guide.pdf"
+        },
+        "community": {
+          "label": "Join Discussion",
+          "url": "https://example.com/community-passive-income"
+        }
+      },
+      "additional_resources": [
+        { "label": "Aave Docs", "url": "https://docs.aave.com" },
+        { "label": "Curve Docs", "url": "https://resources.curve.fi" },
+        { "label": "Beefy Docs", "url": "https://docs.beefy.finance" }
+      ],
+      "previous": null,
+      "next": {
+        "label": "Next Module",
+        "slug": "passive-income-module-2"
+      }
+    }
+  ]
+}
+You can (and should) add Modules 2–8 with the same schema. Keep track consistent (e.g., "passive-income-training"), and increment order.
+
+2) API route to serve module data
+Create /pages/api/training/[slug].ts (Next.js pages router) that reads the JSON above:
+
+ts
+Copy
+Edit
+// pages/api/training/[slug].ts
+import path from "path";
+import fs from "fs";
+
+export default function handler(req, res) {
+  try {
+    const { slug } = req.query;
+    const filePath = path.join(process.cwd(), "data", "training_modules.json");
+    const raw = fs.readFileSync(filePath, "utf-8");
+    const { modules } = JSON.parse(raw);
+
+    const mod = modules.find((m: any) => m.slug === slug);
+    if (!mod) return res.status(404).json({ error: "Module not found" });
+
+    res.status(200).json(mod);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+3) Printable training page (Module template)
+Create /pages/academy/module/[slug].tsx. It fetches from the API, renders step-by-step, adds Notes (local storage), Resources, and easy printing.
+
+tsx
+Copy
+Edit
+// pages/academy/module/[slug].tsx
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+
+type ResLink = { label: string; url: string };
+
+type Module = {
+  slug: string;
+  track: string;
+  order: number;
+  of: number;
+  title: string;
+  duration: string;
+  overview: string;
+  prerequisites: string[];
+  steps: string[];
+  notes_prompt?: string;
+  resources?: {
+    video?: ResLink;
+    pdf?: ResLink;
+    community?: ResLink;
+  };
+  additional_resources?: ResLink[];
+  previous?: { label: string; slug: string } | null;
+  next?: { label: string; slug: string } | null;
+};
+
+export default function TrainingModule() {
+  const router = useRouter();
+  const { slug } = router.query;
+  const [mod, setMod] = useState<Module | null>(null);
+  const [notes, setNotes] = useState("");
+
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`/api/training/${slug}`)
+      .then((r) => r.json())
+      .then((data) => {
+        setMod(data);
+        const saved = localStorage.getItem(`tn-notes-${data.slug}`) || "";
+        setNotes(saved);
+      })
+      .catch(console.error);
+  }, [slug]);
+
+  const saveNotes = () => {
+    if (!mod) return;
+    localStorage.setItem(`tn-notes-${mod.slug}`, notes);
+  };
+
+  if (!mod) {
+    return (
+      <div className="min-h-screen bg-[#1A1F27] text-white p-6">
+        <p>Loading module…</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#1A1F27] text-white">
+      <div className="max-w-5xl mx-auto p-6">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold">{mod.title}</h1>
+            <p className="opacity-80 mt-1">
+              {mod.track.replace(/-/g, " ")} • {mod.duration} • Module {mod.order} of {mod.of}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => window.print()}
+              className="rounded-lg px-3 py-2 bg-cyan-600 hover:bg-cyan-500 hover:shadow-lg transition"
+            >
+              🖨️ Print / Save PDF
+            </button>
+            <Link href="/academy">
+              <span className="rounded-lg px-3 py-2 bg-[#1F2630] border border-[#2C3744] hover:bg-[#263140] cursor-pointer transition">
+                Back to Academy
+              </span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Overview & Prereqs */}
+        <div className="grid md:grid-cols-2 gap-4 mt-6">
+          <div className="bg-[#232B36] rounded-xl p-4 border border-[#2C3744]">
+            <h2 className="text-lg font-semibold mb-2">Overview</h2>
+            <p className="opacity-90">{mod.overview}</p>
+          </div>
+          <div className="bg-[#232B36] rounded-xl p-4 border border-[#2C3744]">
+            <h2 className="text-lg font-semibold mb-2">Prerequisites</h2>
+            <ul className="list-disc ml-5 space-y-1 text-sm opacity-90">
+              {mod.prerequisites?.map((p, i) => <li key={i}>{p}</li>)}
+            </ul>
+          </div>
+        </div>
+
+        {/* Content & Notes */}
+        <div className="grid md:grid-cols-2 gap-4 mt-4">
+          <div className="bg-[#232B36] rounded-xl p-4 border border-[#2C3744]">
+            <h2 className="text-lg font-semibold mb-2">Content — Step by Step</h2>
+            <ol className="list-decimal ml-5 space-y-1 text-sm opacity-90">
+              {mod.steps?.map((s, i) => <li key={i}>{s}</li>)}
+            </ol>
+          </div>
+          <div className="bg-[#232B36] rounded-xl p-4 border border-[#2C3744]">
+            <h2 className="text-lg font-semibold mb-2">Notes</h2>
+            <p className="text-xs opacity-70 mb-2">{mod.notes_prompt || "Use this space to write your notes."}</p>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="w-full h-40 rounded-md bg-[#1A2431] border border-[#2C3744] p-2"
+              placeholder="Type your notes here…"
+            />
+            <div className="mt-2 flex gap-2">
+              <button onClick={saveNotes} className="rounded-md px-3 py-2 bg-cyan-600 hover:bg-cyan-500">Save Notes</button>
+              <button onClick={() => setNotes("")} className="rounded-md px-3 py-2 bg-[#1F2630] border border-[#2C3744] hover:bg-[#263140]">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        {/* Resources */}
+        <div className="bg-[#232B36] rounded-xl p-4 border border-[#2C3744] mt-4">
+          <h2 className="text-lg font-semibold mb-2">Resources</h2>
+          <div className="flex flex-wrap gap-2">
+            {mod.resources?.video && (
+              <a href={mod.resources.video.url} target="_blank" rel="noreferrer"
+                 className="rounded-md px-3 py-2 bg-[#1F2630] border border-[#2C3744] hover:bg-[#263140]">
+                🎬 {mod.resources.video.label}
+              </a>
+            )}
+            {mod.resources?.pdf && (
+              <a href={mod.resources.pdf.url} target="_blank" rel="noreferrer"
+                 className="rounded-md px-3 py-2 bg-[#1F2630] border border-[#2C3744] hover:bg-[#263140]">
+                📄 {mod.resources.pdf.label}
+              </a>
+            )}
+            {mod.resources?.community && (
+              <a href={mod.resources.community.url} target="_blank" rel="noreferrer"
+                 className="rounded-md px-3 py-2 bg-[#1F2630] border border-[#2C3744] hover:bg-[#263140]">
+                💬 {mod.resources.community.label}
+              </a>
+            )}
+          </div>
+
+          {mod.additional_resources?.length ? (
+            <>
+              <h3 className="mt-4 font-medium opacity-90">Additional Resources</h3>
+              <ul className="list-disc ml-5 space-y-1 mt-1 text-sm">
+                {mod.additional_resources.map((r, i) => (
+                  <li key={i}><a className="underline" href={r.url} target="_blank" rel="noreferrer">{r.label}</a></li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+        </div>
+
+        {/* Nav */}
+        <div className="flex items-center justify-between mt-6">
+          {mod.previous ? (
+            <Link href={`/academy/module/${mod.previous.slug}`}><span className="underline cursor-pointer">← {mod.previous.label}</span></Link>
+          ) : <span className="opacity-40">Start</span>}
+          {mod.next ? (
+            <Link href={`/academy/module/${mod.next.slug}`}><span className="underline cursor-pointer">{mod.next.label} →</span></Link>
+          ) : <span className="opacity-40">End</span>}
+        </div>
+      </div>
+
+      <style jsx global>{`
+        @media print {
+          button, .cursor-pointer, a { display: none; }
+          body { background: #fff !important; color: #111 !important; }
+        }
+      `}</style>
+    </div>
+  );
+}
+4) Link it from your hub/academy page
+Add a button/card that points to the first module:
+
+cpp
+Copy
+Edit
+/academy/module/passive-income-module-1
+5) Double-check routing and fill with your existing data
+If you already have trade_ninja_training_prompts.json or other training JSON, you can merge it into training_modules.json (same shape) and Replit will serve it via the new API.
+
+For every track (DeFi, Builder, etc.), create modules …-module-1, …-module-2, etc.
+
+Set previous/next links to chain lessons together.
+
+TL;DR (what Replit needs to do now)
+Add /data/training_modules.json (as above, include Module 1).
+
+Create /pages/api/training/[slug].ts.
+
+Create /pages/academy/module/[slug].tsx.
+
+Start with route: /academy/module/passive-income-module-1.
+
+Repeat for Modules 2–8 by adding entries to the JSON (no extra code needed).
+
+If you want, I can generate Modules 2–8 content in the same structured JSON so you just drop it in.

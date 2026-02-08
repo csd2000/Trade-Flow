@@ -1,0 +1,45 @@
+Master Prompt: The 7-Gate Professional Trading Decision Engine
+Project Overview
+Build a high-performance, streamlined web application for a "7-Gate Trading System." The app's purpose is to enforce discipline and grade trade setups based on strictly sequential logic, with Liquidity Sweeps acting as the primary system trigger.
+
+Core Logic & Hierarchy (The "Gate" System)
+The app must follow a Sequential Unlock flow. A user cannot interact with subsequent gates until the preceding gate is validated.
+
+GATE 0: The Master Trigger (Liquidity Sweep) * Primary Priority: This is the most important gate. The UI must be centered around confirming a Liquidity Sweep at a Key Level (PDH/PDL, Session High/Low, or HTF S&D).
+
+Logic: If "No Sweep" is selected, the rest of the app remains locked/blurred.
+
+GATES 1-3: Context & Structure (HTF Trend, Market Structure Shift, Value Gap/OB entry).
+
+GATES 4-6: Risk & Environment (News check, Risk/Reward ratio calculation, Time of Day/Session).
+
+GATE 7: Psychological Final Confirmation (The "Confluence Check").
+
+Functional Requirements (Production-Grade)
+Kill-Switch Logic: If a user inputs data that violates a "Hard Rule" (e.g., RR < 2:1 or High Impact News imminent), immediately display a "STAY FLAT: INVALID SETUP" overlay.
+
+Dynamic Probability Scoring: Implement a "Setup Grade" (A+, A, B, or C).
+
+A+: All 7 Gates passed with high-quality sweep and 3:1+ RR.
+
+B/C: Minor confluences missing, but still valid.
+
+Visual Probability Gauge: A real-time gauge at the top that moves from Red to Green as checkboxes are completed.
+
+Trade Card Generator: On completion, generate a summary "Trade Card" (exportable as an image) containing the setup grade, the sweep level, and the execution plan.
+
+UI/UX Specifications
+Theme: Professional "High-Contrast Finance" (Dark mode: #0a0a0a background, Neon Green #00ff41 for pass, Crimson #ff0000 for fail).
+
+Interactivity: * Use a "Pulse" animation on the Liquidity Sweep button until it is clicked.
+
+Progress bar at the top to track "Gate Progression."
+
+Responsiveness: Must be fully optimized for mobile "at-the-desk" use.
+
+Technical Stack Preferences
+Frontend: React with Tailwind CSS for rapid, clean styling.
+
+State Management: Ensure the state persists (Local Storage) so a refresh doesn't wipe the current analysis.
+
+Logic Enforcement: Write a wrapper function validateGateSequence() that prevents skipping steps.

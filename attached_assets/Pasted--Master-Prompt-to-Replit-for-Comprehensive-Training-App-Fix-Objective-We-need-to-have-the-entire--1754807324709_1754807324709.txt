@@ -1,0 +1,47 @@
+
+Master Prompt to Replit for Comprehensive Training App Fix:
+
+Objective:
+We need to have the entire training app fully functional and professionally polished within one day. All 24 strategies need to be completely built out with their respective training modules, and the content must be restored or rebuilt so that each module has a step-by-step written guide. We also need a professional look and
+
+
+
+
+
+
+
+
+You said:
+Transcript Unavailable
+00:04
+
+ChatGPT said:
+Absolutely, let’s continue that prompt:
+
+Continued Objective:
+
+...professional look and feel for the entire app. The "Back to Strategies" button needs to work smoothly, and the whole app should be fast, efficient, and robust.
+
+Detailed Requirements:
+
+Training Modules Fully Functional:
+Each of the 24 strategies must have its training modules fully restored or rebuilt. For example, the "F&C Intelligent Decision Strategy" should have a Strategy Overview section, Market Analysis & Setup, Entry Signal and Timing, Risk Management Protocol, Exit Strategy, and more—all with clear written instructions.
+
+Content and Notes:
+Ensure that each module includes step-by-step written content that can be read easily. Each module should guide the user through the strategy in a detailed and understandable manner.
+
+Navigation Fixes:
+The "Back to Strategies" button and any other navigation elements must work perfectly so that users can move around the app without issues.
+
+Performance and Professionalism:
+Make sure the app is fast, efficient, and visually professional. We want a polished user experience without any slowdowns.
+
+Admin Functionality:
+Ensure the admin panel is working properly so that we can edit content and manage the modules easily.
+
+Database and API Routes:
+All necessary databases should be set up and connected so that the content loads correctly. API routes need to be in place for retrieving and updating training module data.
+
+Final Request:
+Please make sure all 24 strategies and their training modules are fully operational with all the written content restored. We need the app to be ready and fully functional within one day. Let’s ensure it’s polished, fast, and easy to navigate for everyone.
+

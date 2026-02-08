@@ -1,0 +1,224 @@
+Here’s your complete DeFi Strategist App Master Prompt, now upgraded with:
+
+✅ Animated Progress Tracking for learning
+
+✅ Contextual AI Learning Assistant
+
+✅ Interactive Strategy Comparison Dashboard
+
+✅ Personalized Risk Assessment Tool
+
+✅ Real-time Market Sentiment Indicator
+
+✅ And all previous features included
+
+
+
+---
+
+💠 MASTER PROMPT: DeFi Strategist App (Elite Trading System)
+
+> 🚀 Build the most powerful, all-in-one DeFi passive income and strategy platform for beginners to experts. Inspired by tools like Bloomberg Terminal, Nansen, and Delphi Digital — simplified for daily income seekers.
+
+
+
+
+---
+
+🧩 CORE MODULES (Features)
+
+1. 📊 Dashboard Overview
+
+Real-time portfolio balance
+
+Top earning strategies
+
+Portfolio diversification by risk level
+
+Wallet sync (MetaMask, WalletConnect)
+
+
+
+2. 🧠 Contextual AI Learning Assistant
+
+Chatbot guides users through each strategy
+
+Explains terminology, risk, expected returns
+
+Personalized suggestions based on performance
+
+
+
+3. 📚 Passive Income Learning Hub
+
+Free access to 10+ strategy modules
+
+Each includes:
+
+Step-by-step instructions
+
+Tools & links
+
+Exit strategy
+
+Risk warnings
+
+🎥 Video + 📄 PDF Guide
+
+
+
+
+4. 🔥 Animated Progress Tracker
+
+Tracks user's completion of modules
+
+Displays badge/XP system
+
+Encourages full strategy mastery
+
+Completion unlocks new higher-yield vaults
+
+
+
+5. ⚖️ Strategy Comparison Dashboard
+
+Side-by-side comparison: ROI, APY, TVL, Risk
+
+Filter by network, platform, risk, stablecoins, leverage
+
+Auto-highlight best-performing strategy for user profile
+
+
+
+6. 🧪 Personalized Risk Assessment Tool
+
+Questionnaire + portfolio scan
+
+Returns score (e.g., 18/30 “Moderate Risk”)
+
+Filters out risky strategies beyond threshold
+
+Suggests rebalancing plan
+
+
+
+7. 📈 Real-time Market Sentiment Indicator
+
+Displays:
+
+Crypto Fear & Greed Index
+
+On-chain data (TVL inflow/outflow)
+
+Twitter/X trending assets
+
+Whale activity from Nansen API
+
+
+Updates hourly
+
+
+
+8. 🧰 Tools Integration
+
+Zapper for LP zapping
+
+1inch for swapping
+
+DeFiLlama for APY data
+
+Chainlink for price oracles
+
+TradingView chart widgets
+
+
+
+
+
+---
+
+🗂️ DATABASE STRUCTURE (Supabase or Firebase)
+
+users: { id, email, wallet_address, risk_level, progress_tracker, completed_modules[] }
+
+strategies: { id, name, network, risk_level, roi_range, tools[], steps[], exit_plan[], tags[], video_url, guide_url }
+
+modules: { id, title, strategy_id, content, quiz[], reward_badge }
+
+comparison_metrics: { strategy_id, apy, tvl, volatility_score, audit_score }
+
+market_sentiment: { timestamp, fear_greed, trending_assets[], whale_activity[] }
+
+
+---
+
+💻 UI MODULES TO BUILD
+
+Page	Route	Feature
+
+Dashboard	/dashboard	Portfolio summary, earnings tracker
+Strategy Hub	/strategies	Full searchable filterable strategy list
+Module Trainer	/training	Progress tracking, step-by-step learning
+Risk Scanner	/risk-assessment	Risk score quiz + wallet scan
+Market Pulse	/market-sentiment	Live indicators, fear/greed dial
+Compare	/compare-strategies	Side-by-side ROI vs. risk dashboards
+AI Guide	/ask-ai	GPT-powered contextual help
+Profile	/profile	Badges, XP, completed modules, favorite strategies
+
+
+
+---
+
+🔮 OPTIONAL ADD-ONS
+
+🔁 Auto DCA Tool
+Schedule deposits or exits with adjustable targets
+
+🧩 Modular Strategy Builder
+Mix and match tools to create your own farming path
+
+🔄 Telegram/Email Alerts
+For low APR, high gas, or market shifts
+
+🛡 DeFi Safety Scanner
+Warns user about rug pulls, liquidity locks, hacked protocols
+
+
+
+---
+
+🧠 GPT-Powered Contextual Prompts
+
+Use AI to:
+
+Summarize any strategy
+
+Explain risk terms in plain language
+
+Recommend the next best module
+
+Auto-generate exit plans
+
+Suggest strategies that match past successes
+
+
+
+---
+
+✅ FINAL INSTRUCTIONS TO IMPLEMENT
+
+> Use this prompt with tools like Replit, Supabase, Next.js, TailwindCSS, ethers.js, and GPT-4 API.
+
+
+
+Would you like me to:
+
+Generate the Next.js app scaffold with routes for all modules?
+
+Auto-fill Supabase tables with your full JSON training content?
+
+Build and deploy a hosted prototype of this experience?
+
+
+Let’s go next-level. Just say the word.
+

@@ -1,0 +1,87 @@
+You are working inside my existing Replit Trading App (Node/TS backend + UI). Upgrade my strategy engine to be more REAL-TIME (price action) and less dependent on lagging indicators.
+
+STRATEGY TO UPGRADE (3 setups + mismatch exits)
+1) ICC Long Setup (bullish displacement + FVG + slow correction)
+2) Wick Fill Long Setup
+3) ORB Breakout
+Exit Rules (Mismatch System)
+
+GOAL
+- Produce higher quality entries using structure/liquidity/volatility regime + LTF confirmation.
+- Support intrabar triggers (signals can fire without waiting for candle close when conditions are met).
+- Still allow candle-close confirmation as a toggle.
+- Provide a single unified “Strategy Engine v2” with modules + settings + debug view.
+
+ASSUME MY APP HAS OR CAN ADD:
+- Candle streams via websockets or polling (OHLCV) for multiple timeframes
+- A chart UI (or table UI) + alerts system
+- A place to store settings (JSON/config) and logs
+
+ARCHITECTURE (MANDATORY)
+Create / refactor into these modules (TypeScript):
+/src/strategy/
+  types.ts
+  marketState.ts       (session, volatility regime, trend/range, HTF bias)
+  structure.ts         (swings, BOS/CHOCH, pullback classification)
+  liquidity.ts         (equal highs/lows, PDH/PDL, session highs/lows, sweeps)
+  zones.ts             (FVG, wick zones, ORB range boxes, mitigation state)
+  scoring.ts           (weighted gates score + thresholds)
+  execution.ts         (entry triggers, stops/targets, order intents)
+  exits.ts             (mismatch exits + stale rules + loss streak lock)
+  engine.ts            (orchestrates everything, returns signals + debug)
+Also add:
+  /src/backtest/ hooks (optional if already exists): metrics + trade log structure
+
+DATA MODEL (MANDATORY)
+- Support multi-timeframe analysis:
+  HTF = 1H (configurable)
+  MTF = 15m (configurable)
+  LTF = 1m or 3m for entry confirmation (configurable)
+- Engine input each tick:
+  { symbol, time, candlesByTf: { "1h":[], "15m":[], "1m":[] }, lastPrice, sessionInfo }
+- Engine output:
+  { signal?: EntrySignal, exits?: ExitSignal[], stateDebug: DebugState }
+
+REAL-TIME PRICE ACTION (KEY UPGRADES)
+1) Displacement confirmation must be price-expansion based:
+   - body >= 3x rollingAvgBody(N)
+   - range >= 1.5x rollingAvgRange(N)
+   - close location: bullish closes in top 20% of range
+2) “Slow correction” must be measurable (not subjective):
+   - 3+ candles into zone
+   - contraction: avgRange(correction) <= 0.8x baseline avgRange
+   - shallow bodies: avgBody(correction) <= 0.6x baseline avgBody
+3) Add structure + liquidity confluence:
+   - HTF bias aligned (bullish structure or discount)
+   - Liquidity sweep boost: sweep of swing low / equal lows / session low, then reclaim
+4) Intrabar entry triggers (NO candle-close required unless toggle on):
+   For zone-based entries (FVG/wick):
+   - Tap + reject: price enters zone then snaps back above midpoint/body-low with momentum
+   - Reclaim + hold: price reclaims key level and holds for X LTF bars
+   - LTF BOS/CHOCH: inside/near zone, structure flips up before entry
+5) Regime filters:
+   - Trend vs range detector (ex: higher highs/lows + slope)
+   - Volatility regime (expansion after contraction preferred)
+   - Session filter (NY open weighting for ORB; avoid dead lunch unless breakout quality is high)
+
+GATES -> WEIGHTED SCORE (REPLACES “3+/4+ gates”)
+Implement a weighted score system (0–10 points) with configurable weights.
+Thresholds:
+- ICC/FVG: >= 6
+- Wick Fill: >= 5
+- ORB: >= 5
+Example gates (each 0–2):
+1) HTF bias aligned
+2) Liquidity sweep + reclaim
+3) Displacement quality
+4) Zone quality + unmitigated first touch
+5) Volatility regime (expansion after contraction)
+6) Session context alignment
+7) Proximity filter pass (not into nearby resistance/liquidity too close)
+
+SETUP RULES — IMPLEMENT EXACTLY WITH IMPROVEMENTS
+
+A) ICC LONG: FVG Displacement + Slow Correction
+Detect:
+- Bullish displacement candle (rules above)
+- Classic 3-candle FVG: between candle1 high and candle3 low

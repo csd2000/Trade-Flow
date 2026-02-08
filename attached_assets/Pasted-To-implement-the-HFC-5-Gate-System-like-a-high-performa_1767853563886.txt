@@ -1,0 +1,36 @@
+To implement the HFC 5-Gate System like a high-performance hedge fund, your code needs to be modular, fast, and strict. Below is the refined Master Prompt for Replit and the specific Python Mismatch Logic block to handle your entry/exit signals.1. Updated HFC 5-Gate RulebookGateConditionOptimized Hedge Fund Setting1. StructureFloor TrendPrice > 50 EMA2. MomentumFast Cross8 EMA > 18 EMA3. PowerTrend StrengthADX (14) > 254. VisualMACD MomentumMACD Histogram (8, 21, 5) > 0 and Rising5. VolumeInstitutional BuyRVOL (Relative Volume) > 2.02. Python "Mismatch Logic" (Kill Switch)This code checks for any "Gate Breach." If the logic detects a mismatch, it triggers a False signal for Entry or a True signal for an Emergency Exit.Pythondef check_hfc_signals(df):
+    """
+    Hedge Fund Level Mismatch Logic
+    Returns: (signal_type, gate_status)
+    """
+    latest = df.iloc[-1]
+    prev = df.iloc[-2]
+    
+    # --- GATE CALCULATIONS ---
+    gate_1 = latest['Close'] > latest['EMA_50']
+    gate_2 = latest['EMA_8'] > latest['EMA_18']
+    gate_3 = latest['ADX'] > 25
+    gate_4 = latest['MACD_Hist'] > 0 and latest['MACD_Hist'] > prev['MACD_Hist']
+    gate_5 = latest['RVOL'] > 2.0
+    
+    gates_open = sum([gate_1, gate_2, gate_3, gate_4, gate_5])
+
+    # --- MISMATCH KILL SWITCH (EXIT RULES) ---
+    # Exit Rule A: Candle Color Flip (Bullish to Bearish)
+    is_red_candle = latest['Close'] < latest['Open']
+    
+    # Exit Rule B: Momentum Fade
+    is_momentum_fading = latest['MACD_Hist'] < prev['MACD_Hist']
+    
+    # Exit Rule C: Structural Breach
+    is_structural_breach = latest['Close'] < latest['EMA_8']
+
+    if is_red_candle or is_momentum_fading or is_structural_breach:
+        return "EXIT", {"gates": gates_open, "reason": "Mismatch Detected"}
+
+    # --- ENTRY TRIGGER ---
+    if gates_open == 5:
+        return "ENTRY", {"gates": gates_open, "reason": "Perfect Scenario"}
+
+    return "HOLD", {"gates": gates_open, "reason": "Scanning..."}
+3. The "Hedge Fund" Master Replit PromptCopy and paste this into your Replit Agent to build the final tool:"Master Prompt: HFC 5-Gate Scalper v2.0 (Hedge Fund Edition)1. Data Layer: Use yfinance to pull 1-minute and 5-minute data for [BITF, NIO, CLYM, BBAI, SOUN]. Calculate:EMA: 8, 18, and 50.ADX: 14-period.MACD: Fast=8, Slow=21, Signal=5.RVOL: Current Volume / (20-day Average Volume / 78 bars per day).2. Execution Gates: > * Trigger Entry alert ONLY when: Price > 50 EMA, 8 EMA > 18 EMA, ADX > 25, MACD Hist is increasing, and RVOL > 2.0.When Entry hits, fetch the 0.80 Delta Call Option expiring in ~30 days.3. Mismatch Kill Switch: > * Monitor the position every 60 seconds.Trigger Emergency Exit Telegram alert if: Candle turns Red, MACD Hist decreases, OR Price breaks below the 8 EMA.4. Intelligence: Display a live 'Gate Status' dashboard in the console showing exactly which of the 5 gates are open for each ticker at any moment."Why this logic is superiorBy using EMA 8/18, you are responding to price changes faster than retail traders using 9/21. By adding ADX > 25, you avoid the #1 killer of options: Choppy markets. When a penny stock is choppy, the time decay (Theta) eats your 30-day option value; the ADX gate ensures you only buy when the stock is actually moving.

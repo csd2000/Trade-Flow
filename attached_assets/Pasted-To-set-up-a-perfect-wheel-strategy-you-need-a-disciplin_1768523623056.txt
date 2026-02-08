@@ -1,0 +1,42 @@
+To set up a "perfect" wheel strategy, you need a disciplined process for cycling between cash-secured puts and covered calls on high-quality assets. For an app builder, this requires integrating real-time market data with automated tracking and risk management tools. 
+Perfect Wheel Strategy Setup
+The "perfect" setup prioritizes income stability and avoiding "bag-holding" bad stocks. 
+Asset Selection: Choose stable, non-cyclical stocks or ETFs (e.g., SPY, QQQ) with strong fundamentals that you are comfortable holding long-term.
+Liquidity Standards: Only trade assets with high options volume (>200,000/day) and tight bid-ask spreads (<$0.50) to ensure easy entry and exit.
+Optimal Entries (Puts): Sell Out-of-the-Money (OTM) puts with a 0.30 delta and 30–45 days to expiration (DTE) to maximize time decay (theta) while balancing assignment risk.
+Profit Management: Close positions early once you have captured 50% of the maximum premium to free up capital and reduce late-cycle risk.
+Recovery Phase (Calls): If assigned, sell covered calls at a strike price at or above your net cost basis (Strike Price - Put Premium). 
+App Builder Requirements
+Building a tool for this strategy requires a combination of real-time data integration and automated logic. 
+Trading API Integration: Connect to brokers like the Alpaca Trading API or Interactive Brokers for real-time data, order execution, and paper trading environments.
+Options Chain Scanner: An automated engine to filter strike prices, DTE, and Greeks (Delta, Theta, Vega) based on user-defined risk profiles.
+Dynamic Cost-Basis Tracker: A calculator that automatically adjusts the stock's cost basis by subtracting all premiums collected and dividends received throughout the cycle.
+Automated "Roll" Logic: Workflows to "roll" positions (closing an existing contract and opening a new one further out) for a net credit when a trade moves against the user.
+Visual Risk Dashboards: Interactive payoff diagrams and P&L visualizations to track active positions across the three phases: Put Selling, Stock Ownership, and Call Selling. 
+Would you like to explore specific API documentation for building the options scanner, or do you need a risk management checklist for your first "spin" of the wheel?
+AI responses may include mistakes. For financial advice, consult a professional. Learn more
+
+
+
+
+undefined
+undefined
+undefined
+15 sites
+Options Wheel Strategy Explained: Definition and How to Trade
+Jan 15, 2025 — Options Wheel Strategy: What You Need to Know * The wheel options strategy is an often-used approach used by option traders hoping...
+
+Moomoo
+
+The Options Wheel Strategy (How to Trade in Python) - Alpaca
+Dec 17, 2024 — It's a cyclical process requiring active management and understanding of the underlying asset. * Step 1: Select the Underlying Ass...
+
+alpaca.markets
+
+Wheel strategy - additional return for your portfolio - CapTrader
+Wheel strategy - additional return for your portfolio! The wheel strategy is a popular option strategy that aims to achieve a prof...
+
+CapTrader
+
+Show all
+Thanks for letting us know. Your feedback helps make AI Mode better for everyone.
